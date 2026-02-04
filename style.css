@@ -16,19 +16,18 @@ body {
     overflow: hidden;
 }
 
-/* ===== BOTÃO PLAY (GRANDE EMBAIXO) ===== */
+/* ===== BOTÃO PLAY (CANTO ESQUERDO INFERIOR) ===== */
 #openSidebar {
     position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 24px;
+    left: 24px;
 
-    width: 90px;
-    height: 90px;
+    width: 68px;
+    height: 68px;
 
     background: rgba(0, 0, 0, 0.65);
     border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 22px;
+    border-radius: 16px;
 
     cursor: pointer;
     z-index: 1001;
@@ -37,29 +36,29 @@ body {
     align-items: center;
     justify-content: center;
 
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(6px);
 
     box-shadow:
-        0 0 20px rgba(106,92,255,0.45),
-        0 0 45px rgba(106,92,255,0.25);
+        0 0 14px rgba(106,92,255,0.45),
+        0 0 30px rgba(106,92,255,0.25);
 
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 #openSidebar img {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
 }
 
 #openSidebar:hover {
-    transform: translateX(-50%) scale(1.12);
+    transform: scale(1.1);
     box-shadow:
-        0 0 30px rgba(106,92,255,0.8),
-        0 0 70px rgba(106,92,255,0.6);
+        0 0 22px rgba(106,92,255,0.75),
+        0 0 50px rgba(106,92,255,0.5);
 }
 
 #openSidebar:active {
-    transform: translateX(-50%) scale(0.95);
+    transform: scale(0.95);
 }
 
 /* ===== SIDEBAR ===== */
