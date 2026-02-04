@@ -6,12 +6,12 @@
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* ===== FUNDO DO SITE (GIF) ===== */
+/* ===== FUNDO DO SITE (JPG) ===== */
 body {
     height: 100vh;
     background:
         linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
-        url("assets/bg.gif") center / cover no-repeat;
+        url("assets/bg.jpg") center / cover no-repeat;
     color: #eaeaea;
     overflow: hidden;
 }
