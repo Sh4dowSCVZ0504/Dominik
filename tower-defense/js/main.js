@@ -1,70 +1,45 @@
+// ===== CANVAS =====
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-const path = [
-  { x: -40, y: 200 },
-  { x: 200, y: 200 },
-  { x: 200, y: 100 },
-  { x: 500, y: 100 },
-  { x: 500, y: 300 },
-  { x: canvas.width + 40, y: 300 }
-];
+canvas.width = 900;
+canvas.height = 500;
 
-const enemy = {
-  x: path[0].x,
-  y: path[0].y,
-  size: 30,
-  speed: 1.2,
-  target: 1
+// ===== IMAGEM DA TORRETA =====
+const torretaImg = new Image();
+torretaImg.src = "../assets/torreta01.png";
+
+// ===== TORRETA =====
+const torreta = {
+    x: canvas.width / 2 - 32,
+    y: canvas.height / 2 - 32,
+    size: 64
 };
 
-function update() {
-  const targetPoint = path[enemy.target];
+// ===== LOOP PRINCIPAL =====
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const dx = targetPoint.x - enemy.x;
-  const dy = targetPoint.y - enemy.y;
-  const dist = Math.hypot(dx, dy);
+    // fundo
+    ctx.fillStyle = "#0b0b0b";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  if (dist < enemy.speed) {
-    enemy.target++;
-    if (enemy.target >= path.length) {
-      enemy.target = 1;
-      enemy.x = path[0].x;
-      enemy.y = path[0].y;
+    // desenha torreta
+    if (torretaImg.complete) {
+        ctx.drawImage(
+            torretaImg,
+            torreta.x,
+            torreta.y,
+            torreta.size,
+            torreta.size
+        );
     }
-  } else {
-    enemy.x += (dx / dist) * enemy.speed;
-    enemy.y += (dy / dist) * enemy.speed;
-  }
+
+    requestAnimationFrame(gameLoop);
 }
 
-function drawPath() {
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 20;
-  ctx.beginPath();
-  ctx.moveTo(path[0].x, path[0].y);
-  for (let i = 1; i < path.length; i++) {
-    ctx.lineTo(path[i].x, path[i].y);
-  }
-  ctx.stroke();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#111";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  drawPath();
-
-  ctx.fillStyle = "red";
-  ctx.fillRect(enemy.x - enemy.size / 2, enemy.y - enemy.size / 2, enemy.size, enemy.size);
-}
-
-function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
-}
-
-loop();
+// ===== START =====
+torretaImg.onload = () => {
+    console.log("✅ Torreta carregada");
+    gameLoop();
+};
