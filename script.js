@@ -17,14 +17,9 @@ const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
 const sidebarWidthSlider = document.getElementById("sidebarWidth");
 
-// ===== ABRIR / FECHAR SIDEBAR =====
+// ===== ABRIR / FECHAR SIDEBAR (CSS CONTROLA TUDO) =====
 openSidebarBtn.addEventListener("click", () => {
     sidebar.classList.toggle("active");
-
-    // garante posição correta ao fechar
-    if (!sidebar.classList.contains("active")) {
-        sidebar.style.transform = `translateX(${sidebar.offsetWidth}px)`;
-    }
 });
 
 // ===== ABRIR / FECHAR CADERNO =====
@@ -134,13 +129,7 @@ brightnessSlider.addEventListener("input", () => {
     wallpaper.style.filter = `brightness(${brightnessSlider.value})`;
 });
 
-// Largura da sidebar (SEM SOBRAR)
+// Largura da sidebar (SEM QUEBRAR)
 sidebarWidthSlider.addEventListener("input", () => {
-    const width = sidebarWidthSlider.value;
-    sidebar.style.width = width + "px";
-
-    if (!sidebar.classList.contains("active")) {
-        sidebar.style.transform = `translateX(${width}px)`;
-    }
+    sidebar.style.width = sidebarWidthSlider.value + "px";
 });
-
