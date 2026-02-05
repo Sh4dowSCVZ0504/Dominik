@@ -11,6 +11,7 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: relative;
 }
 
 /* ===== FUNDO DO SITE (JPG) ===== */
@@ -21,9 +22,7 @@ body {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-
     color: #eaeaea;
-    position: relative;
     transition: filter 0.3s ease; /* Para brilho suave */
 }
 
@@ -72,6 +71,7 @@ body {
         0 0 30px rgba(106,92,255,0.25);
 
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: pulse 3s infinite ease-in-out;
 }
 
 #openSidebar img {
@@ -88,10 +88,6 @@ body {
 
 #openSidebar:active {
     transform: scale(0.95);
-}
-
-#openSidebar {
-    animation: pulse 3s infinite ease-in-out;
 }
 
 @keyframes pulse {
@@ -139,27 +135,37 @@ body {
     filter: drop-shadow(0 0 12px #6a5cff);
 }
 
-/* ===== MENU DE CONFIGURAÇÕES COMO MODAL ===== */
+/* ===== BACKDROP CONFIG ===== */
+#configBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1500;
+}
+
+/* ===== MENU DE CONFIGURAÇÕES ===== */
 #configMenu {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-    width: 300px;
-    padding: 24px;
-    background: rgba(15, 15, 25, 0.95);
+    background: rgba(15,15,25,0.95);
     border-radius: 14px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    padding: 22px 32px;
+    width: 320px;
     display: flex;
     flex-direction: column;
     gap: 16px;
     color: #f5f5f5;
     text-align: left;
-    z-index: 2000;
-
-    transition: all 0.3s ease-out;
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1600;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.8);
 }
 
 #configMenu.active {
@@ -168,7 +174,6 @@ body {
     pointer-events: auto;
 }
 
-/* Cabeçalho do modal */
 #configMenu h2 {
     font-size: 18px;
     text-align: center;
@@ -176,11 +181,8 @@ body {
     color: #6a5cff;
 }
 
-/* Labels e sliders */
 #configMenu label {
     font-size: 14px;
-    margin-bottom: 4px;
-    display: block;
 }
 
 #configMenu input[type="range"] {
@@ -190,7 +192,6 @@ body {
     height: 6px;
     border-radius: 4px;
     background: rgba(106,92,255,0.4);
-    transition: background 0.2s ease;
 }
 
 #configMenu input[type="range"]::-webkit-slider-thumb {
@@ -201,27 +202,6 @@ body {
     background: #6a5cff;
     cursor: pointer;
     box-shadow: 0 0 6px rgba(106,92,255,0.7);
-    transition: background 0.2s ease;
-}
-
-#configMenu input[type="range"]:hover::-webkit-slider-thumb {
-    background: #8c7fff;
-}
-
-/* ===== BACKDROP (FUNDO SEMITRANSPARENTE) ===== */
-#configBackdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    z-index: 1500;
-}
-
-#configBackdrop.active {
-    opacity: 1;
-    pointer-events: auto;
 }
 
 /* ===== ÁREA CENTRAL ===== */
@@ -239,13 +219,10 @@ body {
 #notebook {
     width: 520px;
     height: 360px;
-
     background: rgba(15, 15, 25, 0.95);
     border-radius: 14px;
-
     box-shadow: 0 25px 60px rgba(0,0,0,0.8);
     padding: 22px;
-
     transform: scale(0.9);
     opacity: 0;
     transition: all 0.4s ease;
@@ -265,7 +242,6 @@ body {
     border: none;
     resize: none;
     outline: none;
-
     color: #f5f5f5;
     font-size: 15px;
     line-height: 1.6;
