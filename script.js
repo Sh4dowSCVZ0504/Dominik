@@ -6,20 +6,13 @@ const notebook = document.getElementById("notebook");
 const notebookText = document.getElementById("notebookText");
 const snowContainer = document.getElementById("snowContainer");
 const openConfigBtn = document.getElementById("openConfig");
+const wallpaper = document.getElementById("wallpaper");
 
 // ===== BACKDROP E MENU DE CONFIG =====
-const body = document.body;
-let configBackdrop = document.getElementById("configBackdrop");
-let configMenu = document.getElementById("configMenu");
+const configBackdrop = document.getElementById("configBackdrop");
+const configMenu = document.getElementById("configMenu");
 
-// Criar backdrop se não existir
-if (!configBackdrop) {
-    configBackdrop = document.createElement("div");
-    configBackdrop.id = "configBackdrop";
-    document.body.appendChild(configBackdrop);
-}
-
-// Sliders
+// ===== SLIDERS =====
 const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
 const sidebarWidthSlider = document.getElementById("sidebarWidth");
@@ -27,6 +20,11 @@ const sidebarWidthSlider = document.getElementById("sidebarWidth");
 // ===== ABRIR / FECHAR SIDEBAR =====
 openSidebarBtn.addEventListener("click", () => {
     sidebar.classList.toggle("active");
+
+    // garante posição correta ao fechar
+    if (!sidebar.classList.contains("active")) {
+        sidebar.style.transform = `translateX(${sidebar.offsetWidth}px)`;
+    }
 });
 
 // ===== ABRIR / FECHAR CADERNO =====
@@ -34,21 +32,21 @@ openNotebookBtn.addEventListener("click", () => {
     notebook.classList.toggle("active");
 });
 
-// ===== ABRIR / FECHAR MENU DE CONFIGURAÇÕES =====
+// ===== ABRIR MENU DE CONFIG =====
 openConfigBtn.addEventListener("click", () => {
     configMenu.classList.add("active");
     configBackdrop.style.opacity = "1";
     configBackdrop.style.pointerEvents = "auto";
 });
 
-// Fechar menu ao clicar no backdrop
+// ===== FECHAR MENU AO CLICAR NO BACKDROP =====
 configBackdrop.addEventListener("click", () => {
     configMenu.classList.remove("active");
     configBackdrop.style.opacity = "0";
     configBackdrop.style.pointerEvents = "none";
 });
 
-// ===== SALVAR TEXTO AUTOMATICAMENTE =====
+// ===== SALVAR TEXTO DO CADERNO =====
 notebookText.addEventListener("input", () => {
     localStorage.setItem("dominik-notebook", notebookText.value);
 });
@@ -56,9 +54,7 @@ notebookText.addEventListener("input", () => {
 // ===== CARREGAR TEXTO SALVO =====
 window.addEventListener("load", () => {
     const savedText = localStorage.getItem("dominik-notebook");
-    if (savedText) {
-        notebookText.value = savedText;
-    }
+    if (savedText) notebookText.value = savedText;
 });
 
 // ===== NEVE ANIMADA =====
@@ -68,6 +64,7 @@ let flakes = [];
 function createFlakes(count) {
     snowContainer.innerHTML = "";
     flakes = [];
+
     for (let i = 0; i < count; i++) {
         const flake = document.createElement("img");
         flake.src = "assets/neve.png";
@@ -75,8 +72,6 @@ function createFlakes(count) {
 
         const size = Math.random() * 20 + 10;
         flake.style.width = `${size}px`;
-        flake.style.height = "auto";
-
         flake.style.position = "absolute";
         flake.style.top = `${Math.random() * window.innerHeight}px`;
         flake.style.left = `${Math.random() * window.innerWidth}px`;
@@ -98,19 +93,20 @@ function animateSnow() {
         let left = parseFloat(flake.style.left);
 
         top += flake.speed;
-        left += Math.sin(flake.angle * (Math.PI / 180)) * 0.5;
+        left += Math.sin(flake.angle * Math.PI / 180) * 0.5;
         flake.angle += flake.angleSpeed;
-        flake.style.transform = `rotate(${flake.angle}deg)`;
 
         if (top > window.innerHeight) {
             top = -50;
             left = Math.random() * window.innerWidth;
         }
+
         if (left > window.innerWidth) left = 0;
         if (left < 0) left = window.innerWidth;
 
         flake.style.top = `${top}px`;
         flake.style.left = `${left}px`;
+        flake.style.transform = `rotate(${flake.angle}deg)`;
     }
     requestAnimationFrame(animateSnow);
 }
@@ -118,22 +114,33 @@ function animateSnow() {
 animateSnow();
 
 window.addEventListener("resize", () => {
-    for (let flake of flakes) {
-        let left = parseFloat(flake.style.left);
-        if (left > window.innerWidth) flake.style.left = Math.random() * window.innerWidth + "px";
-    }
+    flakes.forEach(flake => {
+        if (parseFloat(flake.style.left) > window.innerWidth) {
+            flake.style.left = Math.random() * window.innerWidth + "px";
+        }
+    });
 });
 
 // ===== CONTROLES DOS SLIDERS =====
+
+// Quantidade de neve
 snowAmountSlider.addEventListener("input", () => {
     flocoCount = parseInt(snowAmountSlider.value);
     createFlakes(flocoCount);
 });
 
+// Brilho (SOMENTE NO WALLPAPER)
 brightnessSlider.addEventListener("input", () => {
-    document.body.style.filter = `brightness(${brightnessSlider.value})`;
+    wallpaper.style.filter = `brightness(${brightnessSlider.value})`;
 });
 
+// Largura da sidebar (SEM SOBRAR)
 sidebarWidthSlider.addEventListener("input", () => {
-    sidebar.style.width = `${sidebarWidthSlider.value}px`;
+    const width = sidebarWidthSlider.value;
+    sidebar.style.width = width + "px";
+
+    if (!sidebar.classList.contains("active")) {
+        sidebar.style.transform = `translateX(${width}px)`;
+    }
 });
+
