@@ -5,13 +5,21 @@ const openNotebookBtn = document.getElementById("openNotebook");
 const notebook = document.getElementById("notebook");
 const notebookText = document.getElementById("notebookText");
 const snowContainer = document.getElementById("snowContainer");
+const openConfigBtn = document.getElementById("openConfig");
 
-// Elementos do menu de configurações
-const configBtn = document.getElementById("openConfig"); // botão de config na sidebar
-const configMenu = document.getElementById("configMenu");
-const configBackdrop = document.getElementById("configBackdrop");
+// ===== BACKDROP E MENU DE CONFIG =====
+const body = document.body;
+let configBackdrop = document.getElementById("configBackdrop");
+let configMenu = document.getElementById("configMenu");
 
-// Sliders de Configurações
+// Criar backdrop se não existir
+if (!configBackdrop) {
+    configBackdrop = document.createElement("div");
+    configBackdrop.id = "configBackdrop";
+    document.body.appendChild(configBackdrop);
+}
+
+// Sliders
 const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
 const sidebarWidthSlider = document.getElementById("sidebarWidth");
@@ -26,16 +34,18 @@ openNotebookBtn.addEventListener("click", () => {
     notebook.classList.toggle("active");
 });
 
-// ===== ABRIR / FECHAR CONFIGURAÇÕES =====
-configBtn.addEventListener("click", () => {
+// ===== ABRIR / FECHAR MENU DE CONFIGURAÇÕES =====
+openConfigBtn.addEventListener("click", () => {
     configMenu.classList.add("active");
-    configBackdrop.classList.add("active");
+    configBackdrop.style.opacity = "1";
+    configBackdrop.style.pointerEvents = "auto";
 });
 
-// Fechar config clicando no backdrop
+// Fechar menu ao clicar no backdrop
 configBackdrop.addEventListener("click", () => {
     configMenu.classList.remove("active");
-    configBackdrop.classList.remove("active");
+    configBackdrop.style.opacity = "0";
+    configBackdrop.style.pointerEvents = "none";
 });
 
 // ===== SALVAR TEXTO AUTOMATICAMENTE =====
@@ -46,24 +56,24 @@ notebookText.addEventListener("input", () => {
 // ===== CARREGAR TEXTO SALVO =====
 window.addEventListener("load", () => {
     const savedText = localStorage.getItem("dominik-notebook");
-    if (savedText) notebookText.value = savedText;
+    if (savedText) {
+        notebookText.value = savedText;
+    }
 });
 
 // ===== NEVE ANIMADA =====
 let flocoCount = parseInt(snowAmountSlider.value);
 let flakes = [];
 
-// Função para criar flocos
 function createFlakes(count) {
     snowContainer.innerHTML = "";
     flakes = [];
-
     for (let i = 0; i < count; i++) {
         const flake = document.createElement("img");
         flake.src = "assets/neve.png";
         flake.classList.add("flake");
 
-        const size = Math.random() * 20 + 10; // 10px a 30px
+        const size = Math.random() * 20 + 10;
         flake.style.width = `${size}px`;
         flake.style.height = "auto";
 
@@ -80,10 +90,8 @@ function createFlakes(count) {
     }
 }
 
-// Inicializar flocos
 createFlakes(flocoCount);
 
-// Animar flocos
 function animateSnow() {
     for (let flake of flakes) {
         let top = parseFloat(flake.style.top);
@@ -109,7 +117,6 @@ function animateSnow() {
 
 animateSnow();
 
-// Ajustar flocos ao redimensionar
 window.addEventListener("resize", () => {
     for (let flake of flakes) {
         let left = parseFloat(flake.style.left);
@@ -118,19 +125,15 @@ window.addEventListener("resize", () => {
 });
 
 // ===== CONTROLES DOS SLIDERS =====
-
-// Ajustar quantidade de neve
 snowAmountSlider.addEventListener("input", () => {
     flocoCount = parseInt(snowAmountSlider.value);
     createFlakes(flocoCount);
 });
 
-// Ajustar brilho do wallpaper
 brightnessSlider.addEventListener("input", () => {
     document.body.style.filter = `brightness(${brightnessSlider.value})`;
 });
 
-// Ajustar largura da sidebar
 sidebarWidthSlider.addEventListener("input", () => {
     sidebar.style.width = `${sidebarWidthSlider.value}px`;
 });
