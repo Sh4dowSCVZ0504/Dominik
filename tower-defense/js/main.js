@@ -6,14 +6,16 @@ const HEIGHT = canvas.height;
 
 let torres = [];
 let monstros = [];
-let moeda = 100; // dinheiro inicial
+let projeteis = [];
+let moeda = 100;
 let faseAtual = 1;
 let roundAtual = 1;
+let spawnInterval;
 
 /* ===== NÚCLEO ===== */
 const nucleo = {
-    x: WIDTH / 2 - 32,
-    y: HEIGHT / 2 - 32,
+    x: WIDTH/2 - 32,
+    y: HEIGHT/2 - 32,
     width: 64,
     height: 64,
     hp: 100
@@ -39,24 +41,12 @@ class Torre {
         this.tipo = tipo;
 
         switch(tipo) {
-            case "torreta01": // Canhão
-                this.range = 150;
-                this.damage = 15;
-                this.attackSpeed = 60;
-                this.custo = 20;
-                break;
-            case "torreta02": // Flechas
-                this.range = 200;
-                this.damage = 10;
-                this.attackSpeed = 30;
-                this.custo = 25;
-                break;
-            case "torreta03": // Mago
-                this.range = 120;
-                this.damage = 25;
-                this.attackSpeed = 90;
-                this.custo = 35;
-                break;
+            case "torreta01":
+                this.range = 150; this.damage = 15; this.attackSpeed = 60; this.custo = 20; break;
+            case "torreta02":
+                this.range = 200; this.damage = 10; this.attackSpeed = 30; this.custo = 25; break;
+            case "torreta03":
+                this.range = 120; this.damage = 25; this.attackSpeed = 90; this.custo = 35; break;
         }
 
         this.cooldown = 0;
@@ -64,14 +54,14 @@ class Torre {
     }
 
     atacar() {
-        if (this.cooldown > 0) { this.cooldown--; return; }
+        if(this.cooldown > 0) { this.cooldown--; return; }
 
-        for (let monstro of monstros) {
+        for(let monstro of monstros) {
             const dx = monstro.x - this.x;
             const dy = monstro.y - this.y;
             const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist <= this.range) {
-                monstro.hp -= this.damage;
+            if(dist <= this.range) {
+                projeteis.push(new Projetil(this.x, this.y, monstro, this.damage));
                 this.cooldown = this.attackSpeed;
                 break;
             }
@@ -84,49 +74,46 @@ class Torre {
 }
 
 class Monstro {
-    constructor(x, y, tipo="Normal") {
-        this.x = x;
-        this.y = y;
+    constructor(caminho, tipo="Normal") {
+        this.caminho = caminho; // array de pontos [{x,y}]
+        this.pontoAtual = 0;
+        this.x = caminho[0].x;
+        this.y = caminho[0].y;
         this.tipo = tipo;
         this.alive = true;
 
-        if (tipo === "Normal") {
-            this.hp = 50;
-            this.speed = 1;
-            this.valor = 10;
-        } else if (tipo === "Especial") {
-            this.hp = 100;
-            this.speed = 1.2;
-            this.valor = 20;
-        } else if (tipo === "Equipado") {
-            this.hp = 75;
-            this.speed = 0.8;
-            this.valor = 30;
-        }
+        if(tipo === "Normal") { this.hp = 50; this.speed = 1; this.valor = 10; }
+        else if(tipo === "Especial") { this.hp = 100; this.speed = 1.2; this.valor = 20; }
+        else if(tipo === "Equipado") { this.hp = 75; this.speed = 0.8; this.valor = 30; }
     }
 
     mover() {
-        const dx = nucleo.x + nucleo.width/2 - this.x;
-        const dy = nucleo.y + nucleo.height/2 - this.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist > 0) {
-            this.x += (dx/dist) * this.speed;
-            this.y += (dy/dist) * this.speed;
-        }
-
-        if (dist < 5) {
+        if(this.pontoAtual >= this.caminho.length) {
             nucleo.hp -= 5;
             this.alive = false;
+            return;
+        }
+
+        const target = this.caminho[this.pontoAtual];
+        const dx = target.x - this.x;
+        const dy = target.y - this.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+
+        if(dist > this.speed) {
+            this.x += (dx/dist) * this.speed;
+            this.y += (dy/dist) * this.speed;
+        } else {
+            this.x = target.x;
+            this.y = target.y;
+            this.pontoAtual++;
         }
     }
 
     draw() {
         ctx.fillStyle = this.tipo === "Normal" ? "red" : this.tipo === "Especial" ? "orange" : "purple";
-        ctx.fillRect(this.x - 15, this.y - 15, 30, 30);
-
-        // Barra de vida
+        ctx.fillRect(this.x-15, this.y-15, 30, 30);
         ctx.fillStyle = "green";
-        ctx.fillRect(this.x - 15, this.y - 20, 30 * (this.hp / this.maxHp()), 5);
+        ctx.fillRect(this.x-15, this.y-20, 30*(this.hp/this.maxHp()),5);
     }
 
     maxHp() {
@@ -138,24 +125,53 @@ class Monstro {
     }
 }
 
-/* ===== SPAWN DE MONSTROS ===== */
+class Projetil {
+    constructor(x, y, alvo, dano) {
+        this.x = x;
+        this.y = y;
+        this.alvo = alvo;
+        this.dano = dano;
+        this.speed = 5;
+        this.alive = true;
+    }
+
+    mover() {
+        const dx = this.alvo.x - this.x;
+        const dy = this.alvo.y - this.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < this.speed || !this.alvo.alive) {
+            this.alvo.hp -= this.dano;
+            this.alive = false;
+        } else {
+            this.x += (dx/dist)*this.speed;
+            this.y += (dy/dist)*this.speed;
+        }
+    }
+
+    draw() {
+        ctx.fillStyle = "#00ffff";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
+        ctx.fill();
+    }
+}
+
+/* ===== MAPAS DAS FASES ===== */
+const mapas = [
+    [{x:0,y:100},{x:300,y:100},{x:300,y:400},{x:WIDTH/2,y:HEIGHT/2}],
+    [{x:WIDTH, y:50},{x:800,y:50},{x:800,y:500},{x:WIDTH/2,y:HEIGHT/2}],
+    // Adicione mais arrays de pontos para fases diferentes
+];
+
+/* ===== SPAWN DE MONSTROS POR ROUND ===== */
 function spawnMonstrosFase(fase, round) {
-    let qtd = round + Math.floor(fase/2); // quantidade aumenta conforme a fase
-    for (let i = 0; i < qtd; i++) {
-        const positions = [
-            {x:0, y:Math.random()*HEIGHT},
-            {x:WIDTH, y:Math.random()*HEIGHT},
-            {x:Math.random()*WIDTH, y:0},
-            {x:Math.random()*WIDTH, y:HEIGHT}
-        ];
-        const pos = positions[Math.floor(Math.random()*positions.length)];
-
-        // Monstros especiais a cada 5 rounds
+    let qtd = round + Math.floor(fase/2);
+    for(let i=0;i<qtd;i++) {
+        const caminho = mapas[(fase-1)%mapas.length];
         let tipo = "Normal";
-        if (round % 5 === 0) tipo = "Especial";
-        else if (round % 3 === 0) tipo = "Equipado";
-
-        monstros.push(new Monstro(pos.x, pos.y, tipo));
+        if(round % 5 === 0) tipo = "Especial";
+        else if(round % 3 === 0) tipo = "Equipado";
+        monstros.push(new Monstro(caminho, tipo));
     }
 }
 
@@ -163,15 +179,15 @@ function spawnMonstrosFase(fase, round) {
 function drawNucleo() {
     ctx.drawImage(assets.nucleo, nucleo.x, nucleo.y, nucleo.width, nucleo.height);
     ctx.fillStyle = "green";
-    ctx.fillRect(nucleo.x, nucleo.y - 10, nucleo.width*(nucleo.hp/100), 5);
+    ctx.fillRect(nucleo.x, nucleo.y-10, nucleo.width*(nucleo.hp/100),5);
 }
 
 function drawHUD() {
     ctx.fillStyle = "#00ffff";
     ctx.font = "20px JetBrains Mono";
-    ctx.fillText(`Moeda: ${moeda}`, 20, 30);
-    ctx.fillText(`Fase: ${faseAtual} / 10`, 20, 60);
-    ctx.fillText(`Round: ${roundAtual} / 30`, 20, 90);
+    ctx.fillText(`Moeda: ${moeda}`, 20,30);
+    ctx.fillText(`Fase: ${faseAtual}/10`, 20,60);
+    ctx.fillText(`Round: ${roundAtual}/30`, 20,90);
 }
 
 function draw() {
@@ -180,22 +196,24 @@ function draw() {
     drawNucleo();
     drawHUD();
 
-    for (let torre of torres) { torre.draw(); torre.atacar(); }
-    for (let monstro of monstros) { monstro.draw(); monstro.mover(); }
+    torres.forEach(t => { t.draw(); t.atacar(); });
+    monstros.forEach(m => m.draw());
+    projeteis.forEach(p => { p.draw(); p.mover(); });
 
     // Remover monstros mortos e dar moeda
-    for (let i = monstros.length-1; i >=0; i--) {
-        if (!monstros[i].alive || monstros[i].hp <= 0) {
+    for(let i=monstros.length-1;i>=0;i--){
+        if(!monstros[i].alive || monstros[i].hp <= 0){
             moeda += monstros[i].valor;
             monstros.splice(i,1);
         }
     }
 
-    // Checagem de vitória ou derrota
-    if (nucleo.hp <= 0) {
+    projeteis = projeteis.filter(p => p.alive);
+
+    if(nucleo.hp <= 0){
         alert("Você perdeu! Núcleo destruído!");
         location.reload();
-    } else if (faseAtual > 10) {
+    } else if(faseAtual > 10){
         alert("Parabéns! Você venceu todas as fases!");
         location.reload();
     }
@@ -204,40 +222,36 @@ function draw() {
 }
 
 /* ===== COLOCAR TORRES ===== */
-canvas.addEventListener('click', (e) => {
+canvas.addEventListener('click',(e)=>{
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Abre menu de seleção de torre (simples)
-    let tipoEscolhido = prompt("Escolha a torre: 1-Canhão, 2-Flechas, 3-Mago", "1");
-    let tipo = tipoEscolhido === "2" ? "torreta02" : tipoEscolhido === "3" ? "torreta03" : "torreta01";
+    let tipoEscolhido = prompt("Escolha a torre: 1-Canhão, 2-Flechas, 3-Mago","1");
+    let tipo = tipoEscolhido==="2"?"torreta02":tipoEscolhido==="3"?"torreta03":"torreta01";
+    const tempTorre = new Torre(x,y,tipo);
 
-    // Verifica se tem moeda suficiente
-    const tempTorre = new Torre(x, y, tipo);
-    if (moeda >= tempTorre.custo) {
+    if(moeda >= tempTorre.custo){
         torres.push(tempTorre);
         moeda -= tempTorre.custo;
-    } else {
-        alert("Moeda insuficiente!");
-    }
+    } else alert("Moeda insuficiente!");
 });
 
 /* ===== ROUNDS E FASES ===== */
-function iniciarRound() {
-    if (roundAtual > 30) {
+function iniciarRound(){
+    if(roundAtual>30){
         faseAtual++;
         roundAtual = 1;
         alert(`Fase ${faseAtual} iniciando!`);
     }
-    if (faseAtual <= 10) {
+    if(faseAtual <=10){
         spawnMonstrosFase(faseAtual, roundAtual);
         roundAtual++;
     }
 }
 
-// Spawn automático de rounds a cada 10s
-setInterval(iniciarRound, 10000);
+/* ===== SPAWN AUTOMÁTICO ===== */
+spawnInterval = setInterval(iniciarRound,10000);
 
 /* ===== INICIA O JOGO ===== */
 draw();
