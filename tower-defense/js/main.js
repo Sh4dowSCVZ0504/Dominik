@@ -160,7 +160,6 @@ class Projetil {
 const mapas = [
     [{x:0,y:100},{x:300,y:100},{x:300,y:400},{x:WIDTH/2,y:HEIGHT/2}],
     [{x:WIDTH, y:50},{x:800,y:50},{x:800,y:500},{x:WIDTH/2,y:HEIGHT/2}],
-    // Adicione mais arrays de pontos para fases diferentes
 ];
 
 /* ===== SPAWN DE MONSTROS POR ROUND ===== */
@@ -197,7 +196,7 @@ function draw() {
     drawHUD();
 
     torres.forEach(t => { t.draw(); t.atacar(); });
-    monstros.forEach(m => m.draw());
+    monstros.forEach(m => { m.draw(); m.mover(); }); // <- mover os monstros aqui
     projeteis.forEach(p => { p.draw(); p.mover(); });
 
     // Remover monstros mortos e dar moeda
@@ -251,8 +250,18 @@ function iniciarRound(){
 }
 
 /* ===== INICIA O JOGO COM BOTÃO ===== */
-document.getElementById("playBtn").addEventListener("click", () => {
-    document.getElementById("menu").style.display = "none"; // esconde menu
-    draw(); // inicia o jogo
-    setInterval(iniciarRound, 10000); // spawn automático
+window.addEventListener("load", () => {
+    const playBtn = document.getElementById("playBtn");
+    const menu = document.getElementById("menu");
+
+    if (!playBtn || !menu) {
+        console.error("Elemento playBtn ou menu não encontrado no HTML!");
+        return;
+    }
+
+    playBtn.addEventListener("click", () => {
+        menu.style.display = "none"; // esconde menu
+        draw(); // inicia o jogo
+        setInterval(iniciarRound, 10000); // spawn automático
+    });
 });
