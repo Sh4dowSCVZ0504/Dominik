@@ -37,9 +37,28 @@ class Torre {
         this.x = x;
         this.y = y;
         this.tipo = tipo;
-        this.range = 150;
-        this.damage = tipo === "torreta03" ? 20 : 10;
-        this.attackSpeed = tipo === "torreta02" ? 30 : 60;
+
+        switch(tipo) {
+            case "torreta01": // Canhão
+                this.range = 150;
+                this.damage = 15;
+                this.attackSpeed = 60;
+                this.custo = 20;
+                break;
+            case "torreta02": // Flechas
+                this.range = 200;
+                this.damage = 10;
+                this.attackSpeed = 30;
+                this.custo = 25;
+                break;
+            case "torreta03": // Mago
+                this.range = 120;
+                this.damage = 25;
+                this.attackSpeed = 90;
+                this.custo = 35;
+                break;
+        }
+
         this.cooldown = 0;
         this.image = assets[tipo];
     }
@@ -65,14 +84,25 @@ class Torre {
 }
 
 class Monstro {
-    constructor(x, y, hp, speed, valor, tipo="Normal") {
+    constructor(x, y, tipo="Normal") {
         this.x = x;
         this.y = y;
-        this.hp = hp;
-        this.speed = speed;
-        this.valor = valor;
         this.tipo = tipo;
         this.alive = true;
+
+        if (tipo === "Normal") {
+            this.hp = 50;
+            this.speed = 1;
+            this.valor = 10;
+        } else if (tipo === "Especial") {
+            this.hp = 100;
+            this.speed = 1.2;
+            this.valor = 20;
+        } else if (tipo === "Equipado") {
+            this.hp = 75;
+            this.speed = 0.8;
+            this.valor = 30;
+        }
     }
 
     mover() {
@@ -91,35 +121,41 @@ class Monstro {
     }
 
     draw() {
-        ctx.fillStyle = this.tipo === "Normal" ? "red" : "orange";
+        ctx.fillStyle = this.tipo === "Normal" ? "red" : this.tipo === "Especial" ? "orange" : "purple";
         ctx.fillRect(this.x - 15, this.y - 15, 30, 30);
+
+        // Barra de vida
         ctx.fillStyle = "green";
-        ctx.fillRect(this.x - 15, this.y - 20, 30 * (this.hp/this.maxHp()), 5);
+        ctx.fillRect(this.x - 15, this.y - 20, 30 * (this.hp / this.maxHp()), 5);
     }
 
     maxHp() {
-        return this.tipo === "Normal" ? 50 : 100;
+        switch(this.tipo) {
+            case "Normal": return 50;
+            case "Especial": return 100;
+            case "Equipado": return 75;
+        }
     }
 }
 
-/* ===== SPAWN DE MONSTROS POR ROUND ===== */
+/* ===== SPAWN DE MONSTROS ===== */
 function spawnMonstrosFase(fase, round) {
-    let qtd = round; // quantidade de monstros = round atual
+    let qtd = round + Math.floor(fase/2); // quantidade aumenta conforme a fase
     for (let i = 0; i < qtd; i++) {
         const positions = [
-            {x: 0, y: Math.random()*HEIGHT},
-            {x: WIDTH, y: Math.random()*HEIGHT},
-            {x: Math.random()*WIDTH, y: 0},
-            {x: Math.random()*WIDTH, y: HEIGHT}
+            {x:0, y:Math.random()*HEIGHT},
+            {x:WIDTH, y:Math.random()*HEIGHT},
+            {x:Math.random()*WIDTH, y:0},
+            {x:Math.random()*WIDTH, y:HEIGHT}
         ];
         const pos = positions[Math.floor(Math.random()*positions.length)];
 
         // Monstros especiais a cada 5 rounds
-        if (round % 5 === 0) {
-            monstros.push(new Monstro(pos.x, pos.y, 100, 1.2, 20, "Especial"));
-        } else {
-            monstros.push(new Monstro(pos.x, pos.y, 50, 1, 10));
-        }
+        let tipo = "Normal";
+        if (round % 5 === 0) tipo = "Especial";
+        else if (round % 3 === 0) tipo = "Equipado";
+
+        monstros.push(new Monstro(pos.x, pos.y, tipo));
     }
 }
 
@@ -130,13 +166,21 @@ function drawNucleo() {
     ctx.fillRect(nucleo.x, nucleo.y - 10, nucleo.width*(nucleo.hp/100), 5);
 }
 
+function drawHUD() {
+    ctx.fillStyle = "#00ffff";
+    ctx.font = "20px JetBrains Mono";
+    ctx.fillText(`Moeda: ${moeda}`, 20, 30);
+    ctx.fillText(`Fase: ${faseAtual} / 10`, 20, 60);
+    ctx.fillText(`Round: ${roundAtual} / 30`, 20, 90);
+}
+
 function draw() {
     ctx.clearRect(0,0,WIDTH,HEIGHT);
 
     drawNucleo();
+    drawHUD();
 
     for (let torre of torres) { torre.draw(); torre.atacar(); }
-
     for (let monstro of monstros) { monstro.draw(); monstro.mover(); }
 
     // Remover monstros mortos e dar moeda
@@ -145,6 +189,15 @@ function draw() {
             moeda += monstros[i].valor;
             monstros.splice(i,1);
         }
+    }
+
+    // Checagem de vitória ou derrota
+    if (nucleo.hp <= 0) {
+        alert("Você perdeu! Núcleo destruído!");
+        location.reload();
+    } else if (faseAtual > 10) {
+        alert("Parabéns! Você venceu todas as fases!");
+        location.reload();
     }
 
     requestAnimationFrame(draw);
@@ -156,29 +209,34 @@ canvas.addEventListener('click', (e) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    if (moeda >= 20) { // custo da torre
-        torres.push(new Torre(x, y, "torreta01"));
-        moeda -= 20;
+    // Abre menu de seleção de torre (simples)
+    let tipoEscolhido = prompt("Escolha a torre: 1-Canhão, 2-Flechas, 3-Mago", "1");
+    let tipo = tipoEscolhido === "2" ? "torreta02" : tipoEscolhido === "3" ? "torreta03" : "torreta01";
+
+    // Verifica se tem moeda suficiente
+    const tempTorre = new Torre(x, y, tipo);
+    if (moeda >= tempTorre.custo) {
+        torres.push(tempTorre);
+        moeda -= tempTorre.custo;
+    } else {
+        alert("Moeda insuficiente!");
     }
 });
 
-/* ===== CONTROLE DE ROUNDS E FASES ===== */
+/* ===== ROUNDS E FASES ===== */
 function iniciarRound() {
     if (roundAtual > 30) {
         faseAtual++;
         roundAtual = 1;
         alert(`Fase ${faseAtual} iniciando!`);
     }
-    if (faseAtual > 10) {
-        alert("Parabéns! Você venceu todas as fases!");
-        return;
+    if (faseAtual <= 10) {
+        spawnMonstrosFase(faseAtual, roundAtual);
+        roundAtual++;
     }
-
-    spawnMonstrosFase(faseAtual, roundAtual);
-    roundAtual++;
 }
 
-// Inicia rounds automaticamente a cada 10s
+// Spawn automático de rounds a cada 10s
 setInterval(iniciarRound, 10000);
 
 /* ===== INICIA O JOGO ===== */
