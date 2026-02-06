@@ -250,8 +250,9 @@ function iniciarRound(){
     }
 }
 
-/* ===== SPAWN AUTOMÁTICO ===== */
-spawnInterval = setInterval(iniciarRound,10000);
-
-/* ===== INICIA O JOGO ===== */
-draw();
+/* ===== INICIA O JOGO COM BOTÃO ===== */
+document.getElementById("playBtn").addEventListener("click", () => {
+    document.getElementById("menu").style.display = "none"; // esconde menu
+    draw(); // inicia o jogo
+    setInterval(iniciarRound, 10000); // spawn automático
+});
