@@ -7,15 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- LINHAS DE CÓDIGO ANIMADAS -->
-    <div class="code-bg">
-        for(let i=0;i<100;i++){console.log("Nexus Vanguard");}
-    </div>
-
-    <!-- CANVAS DO JOGO -->
-    <canvas id="gameCanvas" width="1280" height="720"></canvas>
-
-    <!-- MENU CENTRAL -->
+    <!-- MENU -->
     <div id="menu">
         <h1>Nexus Vanguard</h1>
         <button class="menu-btn" id="playBtn">Play</button>
@@ -24,7 +16,7 @@
     </div>
 
     <!-- CONFIGURAÇÕES -->
-    <div id="config">
+    <div id="config" style="display:none;">
         <h2>Configurações</h2>
         <label class="switch">
             <input type="checkbox" id="soundToggle" checked>
@@ -34,39 +26,10 @@
         <button class="menu-btn" id="backBtn">Voltar</button>
     </div>
 
+    <!-- CANVAS DO JOGO -->
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+    <!-- SCRIPT DO JOGO -->
     <script src="main.js"></script>
-    <script>
-        // ===== SCRIPT RÁPIDO PARA MENU =====
-        const playBtn = document.getElementById('playBtn');
-        const configBtn = document.getElementById('configBtn');
-        const soundBtn = document.getElementById('soundBtn');
-        const backBtn = document.getElementById('backBtn');
-        const configDiv = document.getElementById('config');
-        const menuDiv = document.getElementById('menu');
-        const soundToggle = document.getElementById('soundToggle');
-
-        // Mostrar Configurações
-        configBtn.addEventListener('click', () => {
-            menuDiv.style.display = 'none';
-            configDiv.style.display = 'block';
-        });
-
-        // Voltar pro menu
-        backBtn.addEventListener('click', () => {
-            configDiv.style.display = 'none';
-            menuDiv.style.display = 'block';
-        });
-
-        // Alternar som
-        soundToggle.addEventListener('change', () => {
-            soundBtn.textContent = "Som: " + (soundToggle.checked ? "On" : "Off");
-        });
-
-        // Play button (vai iniciar o jogo)
-        playBtn.addEventListener('click', () => {
-            menuDiv.style.display = 'none';
-            alert("Aqui vai iniciar o jogo! (Depois adicionamos as fases e torres)");
-        });
-    </script>
 </body>
 </html>
