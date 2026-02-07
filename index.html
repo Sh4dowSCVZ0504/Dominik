@@ -13,21 +13,26 @@
 </head>
 <body>
 
-    <!-- WALLPAPER (controle de brilho funciona aqui) -->
+    <!-- ÁUDIOS -->
+    <audio id="bgMusic" src="assets/ambiente.mp3" loop></audio>
+    <audio id="clickSound" src="assets/click.mp3"></audio>
+
+    <!-- WALLPAPER -->
     <div id="wallpaper"></div>
 
     <!-- NEVE -->
     <div id="snowContainer"></div>
 
     <!-- BOTÃO PLAY -->
-    <button id="openSidebar">
+    <button id="openSidebar" class="play-click">
         <img src="assets/play.png" alt="Abrir menu">
     </button>
 
     <!-- SIDEBAR -->
     <aside id="sidebar">
-        <img src="assets/caderno.png" id="openNotebook" alt="Caderno">
-        <img src="assets/config.png" id="openConfig" alt="Configurações">
+        <img src="assets/caderno.png" id="openNotebook" class="play-click" alt="Caderno">
+        <img src="assets/config.png" id="openConfig" class="play-click" alt="Configurações">
+        <img src="assets/nexus.png" id="openNexusMenu" class="play-click" alt="Nexus Vanguard">
     </aside>
 
     <!-- BACKDROP CONFIG -->
@@ -45,6 +50,45 @@
 
         <label for="sidebarWidth">Tamanho da barra lateral:</label>
         <input type="range" id="sidebarWidth" min="120" max="400" value="120">
+
+        <hr>
+
+        <!-- NOVAS CONFIGS -->
+
+        <label for="musicVolume">Volume da música ambiente:</label>
+        <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
+
+        <label>
+            <input type="checkbox" id="toggleClickSound" checked>
+            Ativar som de clique
+        </label>
+
+        <label>
+            <input type="checkbox" id="compactMode">
+            Botões ultra compactos
+        </label>
+    </div>
+
+    <!-- MODAL NEXUS -->
+    <div id="nexusModalBackdrop"></div>
+
+    <div id="nexusModal">
+        <img src="assets/nexus.png" alt="Nexus Vanguard">
+        <h2>Nexus Vanguard</h2>
+
+        <p>
+            Um Tower Defense estratégico onde cada escolha importa.
+            Defenda seu núcleo, evolua suas torres e sobreviva às ondas inimigas.
+        </p>
+
+        <label class="confirmBox">
+            <input type="checkbox" id="confirmNexus">
+            Eu entendo que estou saindo do Dominik.
+        </label>
+
+        <button id="launchNexus" disabled>
+            Abrir Nexus Vanguard
+        </button>
     </div>
 
     <!-- CONTEÚDO CENTRAL -->
