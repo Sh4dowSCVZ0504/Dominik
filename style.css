@@ -13,7 +13,11 @@ html, body {
     overflow: hidden;
 }
 
-/* ===== WALLPAPER REAL (BRILHO FUNCIONA AQUI) ===== */
+body {
+    color: #eaeaea;
+}
+
+/* ===== WALLPAPER ===== */
 #wallpaper {
     position: fixed;
     inset: 0;
@@ -27,8 +31,17 @@ html, body {
     z-index: -3;
 }
 
-body {
-    color: #eaeaea;
+/* ===== GRID RETRÔ ===== */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: -1;
 }
 
 /* ===== NEVE ===== */
@@ -91,25 +104,21 @@ body {
     100% { transform: scale(1); }
 }
 
-/* ===== SIDEBAR (SEM BUG, SEM SOBRAR) ===== */
+/* ===== SIDEBAR ===== */
 #sidebar {
     position: fixed;
     top: 0;
     right: 0;
     height: 100vh;
     width: 120px;
-
     background: rgba(10, 10, 20, 0.92);
     backdrop-filter: blur(14px);
-
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 140px;
     gap: 38px;
-
     box-shadow: -10px 0 40px rgba(0,0,0,0.8);
-
     transform: translateX(100%);
     transition: transform 0.4s ease, width 0.3s ease;
     z-index: 1000;
@@ -174,28 +183,6 @@ body {
     color: #6a5cff;
 }
 
-#configMenu label {
-    font-size: 14px;
-}
-
-#configMenu input[type="range"] {
-    width: 100%;
-    height: 6px;
-    border-radius: 4px;
-    background: rgba(106,92,255,0.4);
-    cursor: pointer;
-    -webkit-appearance: none;
-}
-
-#configMenu input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #6a5cff;
-    box-shadow: 0 0 6px rgba(106,92,255,0.7);
-}
-
 /* ===== CONTEÚDO CENTRAL ===== */
 #mainContent {
     width: 100%;
@@ -237,25 +224,92 @@ body {
     line-height: 1.6;
 }
 
-/* ===== SCROLL ===== */
-#notebookText::-webkit-scrollbar {
-    width: 6px;
-}
-
-#notebookText::-webkit-scrollbar-thumb {
-    background: #6a5cff;
-    border-radius: 10px;
-}
-
-/* ===== GRID RETRÔ ===== */
-body::after {
-    content: "";
+/* ===== MODAL NEXUS ===== */
+#nexusModalBackdrop {
     position: fixed;
     inset: 0;
-    background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    opacity: 0;
     pointer-events: none;
-    z-index: -1;
+    transition: opacity 0.3s ease;
+    z-index: 1700;
+}
+
+#nexusModalBackdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#nexusModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(15,15,30,0.95);
+    border-radius: 18px;
+    padding: 30px;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1800;
+    box-shadow:
+        0 0 30px rgba(106,92,255,0.6),
+        0 30px 80px rgba(0,0,0,0.8);
+}
+
+#nexusModal.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+#nexusModal img {
+    width: 90px;
+    filter: drop-shadow(0 0 20px rgba(106,92,255,0.8));
+}
+
+#nexusModal h2 {
+    color: #6a5cff;
+}
+
+#launchNexus {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #6a5cff;
+    color: white;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+#launchNexus:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ===== MODO COMPACTO ===== */
+body.compact-mode #openSidebar {
+    width: 60px;
+    height: 60px;
+}
+
+body.compact-mode #openSidebar img {
+    width: 28px;
+    height: 28px;
+}
+
+body.compact-mode #sidebar img {
+    width: 36px;
+}
+
+body.compact-mode #notebook {
+    width: 420px;
+    height: 300px;
 }
