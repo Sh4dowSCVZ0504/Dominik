@@ -8,6 +8,20 @@ const snowContainer = document.getElementById("snowContainer");
 const openConfigBtn = document.getElementById("openConfig");
 const wallpaper = document.getElementById("wallpaper");
 
+// ===== ÁUDIO =====
+const bgMusic = document.getElementById("bgMusic");
+const clickSound = document.getElementById("clickSound");
+const musicVolume = document.getElementById("musicVolume");
+const toggleClickSound = document.getElementById("toggleClickSound");
+const compactMode = document.getElementById("compactMode");
+
+// ===== NEXUS =====
+const openNexusMenu = document.getElementById("openNexusMenu");
+const nexusModal = document.getElementById("nexusModal");
+const nexusModalBackdrop = document.getElementById("nexusModalBackdrop");
+const confirmNexus = document.getElementById("confirmNexus");
+const launchNexus = document.getElementById("launchNexus");
+
 // ===== BACKDROP E MENU DE CONFIG =====
 const configBackdrop = document.getElementById("configBackdrop");
 const configMenu = document.getElementById("configMenu");
@@ -17,39 +31,112 @@ const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
 const sidebarWidthSlider = document.getElementById("sidebarWidth");
 
-// ===== ABRIR / FECHAR SIDEBAR (CSS CONTROLA TUDO) =====
+// ===== SIDEBAR =====
 openSidebarBtn.addEventListener("click", () => {
     sidebar.classList.toggle("active");
 });
 
-// ===== ABRIR / FECHAR CADERNO =====
+// ===== CADERNO =====
 openNotebookBtn.addEventListener("click", () => {
     notebook.classList.toggle("active");
 });
 
-// ===== ABRIR MENU DE CONFIG =====
+// ===== CONFIG =====
 openConfigBtn.addEventListener("click", () => {
     configMenu.classList.add("active");
     configBackdrop.style.opacity = "1";
     configBackdrop.style.pointerEvents = "auto";
 });
 
-// ===== FECHAR MENU AO CLICAR NO BACKDROP =====
 configBackdrop.addEventListener("click", () => {
     configMenu.classList.remove("active");
     configBackdrop.style.opacity = "0";
     configBackdrop.style.pointerEvents = "none";
 });
 
-// ===== SALVAR TEXTO DO CADERNO =====
+// ===== SALVAR CADERNO =====
 notebookText.addEventListener("input", () => {
     localStorage.setItem("dominik-notebook", notebookText.value);
 });
 
-// ===== CARREGAR TEXTO SALVO =====
+// ===== CARREGAR DADOS =====
 window.addEventListener("load", () => {
     const savedText = localStorage.getItem("dominik-notebook");
     if (savedText) notebookText.value = savedText;
+
+    const savedVolume = localStorage.getItem("dominik-musicVolume");
+    if (savedVolume) {
+        musicVolume.value = savedVolume;
+        bgMusic.volume = savedVolume;
+    }
+
+    const savedClick = localStorage.getItem("dominik-clickSound");
+    if (savedClick !== null) {
+        toggleClickSound.checked = savedClick === "true";
+    }
+
+    const savedCompact = localStorage.getItem("dominik-compact");
+    if (savedCompact === "true") {
+        compactMode.checked = true;
+        document.body.classList.add("compact-mode");
+    }
+});
+
+// ===== ATIVAR MÚSICA NO PRIMEIRO CLIQUE =====
+document.addEventListener("click", () => {
+    if (bgMusic.paused) {
+        bgMusic.volume = musicVolume.value;
+        bgMusic.play().catch(() => {});
+    }
+}, { once: true });
+
+// ===== SOM DE CLIQUE =====
+document.addEventListener("click", (e) => {
+    if (e.target.closest(".play-click") && toggleClickSound.checked) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+    }
+});
+
+// Volume
+musicVolume.addEventListener("input", () => {
+    bgMusic.volume = musicVolume.value;
+    localStorage.setItem("dominik-musicVolume", musicVolume.value);
+});
+
+// Toggle click
+toggleClickSound.addEventListener("change", () => {
+    localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
+});
+
+// Compact mode
+compactMode.addEventListener("change", () => {
+    document.body.classList.toggle("compact-mode", compactMode.checked);
+    localStorage.setItem("dominik-compact", compactMode.checked);
+});
+
+// ===== NEXUS MODAL =====
+openNexusMenu.addEventListener("click", () => {
+    nexusModal.classList.add("active");
+    nexusModalBackdrop.classList.add("active");
+});
+
+nexusModalBackdrop.addEventListener("click", () => {
+    nexusModal.classList.remove("active");
+    nexusModalBackdrop.classList.remove("active");
+    confirmNexus.checked = false;
+    launchNexus.disabled = true;
+});
+
+confirmNexus.addEventListener("change", () => {
+    launchNexus.disabled = !confirmNexus.checked;
+});
+
+launchNexus.addEventListener("click", () => {
+    window.open(
+        "https://sh4dowscvz0504.github.io/Dominik/tower-defense/",
+        "_blank"
+    );
 });
 
 // ===== NEVE ANIMADA =====
@@ -116,20 +203,17 @@ window.addEventListener("resize", () => {
     });
 });
 
-// ===== CONTROLES DOS SLIDERS =====
-
-// Quantidade de neve
+// ===== SLIDERS =====
 snowAmountSlider.addEventListener("input", () => {
     flocoCount = parseInt(snowAmountSlider.value);
     createFlakes(flocoCount);
 });
 
-// Brilho (SOMENTE NO WALLPAPER)
 brightnessSlider.addEventListener("input", () => {
     wallpaper.style.filter = `brightness(${brightnessSlider.value})`;
 });
 
-// Largura da sidebar (SEM QUEBRAR)
 sidebarWidthSlider.addEventListener("input", () => {
     sidebar.style.width = sidebarWidthSlider.value + "px";
 });
+
