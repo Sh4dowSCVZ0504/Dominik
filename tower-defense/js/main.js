@@ -2,15 +2,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
     /* ===== ELEMENTOS ===== */
     const canvas = document.getElementById("gameCanvas");
-    const playBtn = document.getElementById("playBtn");
-    const menu = document.getElementById("menu");
-
-    if (!canvas) {
-        console.error("Canvas não encontrado!");
-        return;
-    }
-
     const ctx = canvas.getContext("2d");
+
+    const playBtn = document.getElementById("playBtn");
+    const configBtn = document.getElementById("configBtn");
+    const soundBtn = document.getElementById("soundBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const menu = document.getElementById("menu");
+    const configMenu = document.getElementById("config");
+
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
 
@@ -21,6 +22,7 @@ window.addEventListener("DOMContentLoaded", () => {
     let moeda = 100;
     let faseAtual = 1;
     let roundAtual = 1;
+    let soundOn = true;
 
     /* ===== NÚCLEO ===== */
     const nucleo = {
@@ -95,7 +97,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             if (tipo === "Normal") { this.hp = 50; this.speed = 1; this.valor = 10; }
             else if (tipo === "Especial") { this.hp = 100; this.speed = 1.2; this.valor = 20; }
-            else if (tipo === "Equipado") { this.hp = 75; this.speed = 0.8; this.valor = 30; }
+            else { this.hp = 75; this.speed = 0.8; this.valor = 30; }
         }
 
         mover() {
@@ -131,11 +133,9 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         maxHp() {
-            switch (this.tipo) {
-                case "Normal": return 50;
-                case "Especial": return 100;
-                case "Equipado": return 75;
-            }
+            if (this.tipo === "Normal") return 50;
+            if (this.tipo === "Especial") return 100;
+            return 75;
         }
     }
 
@@ -176,7 +176,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    /* ===== MAPAS ===== */
     const mapas = [
         [{ x: 0, y: 100 }, { x: 300, y: 100 }, { x: 300, y: 400 }, { x: WIDTH / 2, y: HEIGHT / 2 }],
         [{ x: WIDTH, y: 50 }, { x: 800, y: 50 }, { x: 800, y: 500 }, { x: WIDTH / 2, y: HEIGHT / 2 }],
@@ -193,25 +192,10 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function drawNucleo() {
-        ctx.drawImage(assets.nucleo, nucleo.x, nucleo.y, nucleo.width, nucleo.height);
-        ctx.fillStyle = "green";
-        ctx.fillRect(nucleo.x, nucleo.y - 10, nucleo.width * (nucleo.hp / 100), 5);
-    }
-
-    function drawHUD() {
-        ctx.fillStyle = "#00ffff";
-        ctx.font = "20px JetBrains Mono";
-        ctx.fillText(`Moeda: ${moeda}`, 20, 30);
-        ctx.fillText(`Fase: ${faseAtual}/10`, 20, 60);
-        ctx.fillText(`Round: ${roundAtual}/30`, 20, 90);
-    }
-
     function draw() {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-        drawNucleo();
-        drawHUD();
+        ctx.drawImage(assets.nucleo, nucleo.x, nucleo.y, nucleo.width, nucleo.height);
 
         torres.forEach(t => { t.draw(); t.atacar(); });
         monstros.forEach(m => { m.draw(); m.mover(); });
@@ -235,19 +219,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function iniciarRound() {
-        if (roundAtual > 30) {
-            faseAtual++;
-            roundAtual = 1;
-            alert(`Fase ${faseAtual} iniciando!`);
-        }
-
-        if (faseAtual <= 10) {
-            spawnMonstrosFase(faseAtual, roundAtual);
-            roundAtual++;
-        }
+        spawnMonstrosFase(faseAtual, roundAtual);
+        roundAtual++;
     }
 
-    /* ===== COLOCAR TORRES ===== */
     canvas.addEventListener("click", (e) => {
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -267,13 +242,28 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    /* ===== BOTÃO PLAY ===== */
-    if (playBtn && menu) {
-        playBtn.addEventListener("click", () => {
-            menu.style.display = "none";
-            draw();
-            setInterval(iniciarRound, 10000);
-        });
-    }
+    /* ===== MENU FUNCIONAL ===== */
+
+    playBtn.addEventListener("click", () => {
+        menu.style.display = "none";
+        canvas.style.display = "block";
+        draw();
+        setInterval(iniciarRound, 10000);
+    });
+
+    configBtn.addEventListener("click", () => {
+        menu.style.display = "none";
+        configMenu.style.display = "flex";
+    });
+
+    backBtn.addEventListener("click", () => {
+        configMenu.style.display = "none";
+        menu.style.display = "flex";
+    });
+
+    soundBtn.addEventListener("click", () => {
+        soundOn = !soundOn;
+        soundBtn.textContent = soundOn ? "Som: On" : "Som: Off";
+    });
 
 });
