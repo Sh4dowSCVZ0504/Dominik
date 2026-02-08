@@ -14,7 +14,7 @@ const clickSound = document.getElementById("clickSound");
 const musicVolume = document.getElementById("musicVolume");
 const toggleClickSound = document.getElementById("toggleClickSound");
 const compactMode = document.getElementById("compactMode");
-const toggleMusicBtn = document.getElementById("toggleMusicBtn");
+const toggleMusicBtn = document.getElementById("toggleMusicBtn"); // NOVO
 
 // ===== NEXUS =====
 const openNexusMenu = document.getElementById("openNexusMenu");
@@ -81,20 +81,15 @@ window.addEventListener("load", () => {
         compactMode.checked = true;
         document.body.classList.add("compact-mode");
     }
-});
 
-// ===== BOTÃO ON/OFF MÚSICA =====
-toggleMusicBtn.addEventListener("click", () => {
-    if (bgMusic.paused) {
-        bgMusic.volume = musicVolume.value;
-        bgMusic.play().then(() => {
-            toggleMusicBtn.textContent = "OFF";
-            console.log("Música ligada");
-        }).catch(err => console.error("Erro ao tocar música:", err));
-    } else {
-        bgMusic.pause();
+    const savedMusic = localStorage.getItem("dominik-musicON");
+    if (savedMusic === "true") {
         toggleMusicBtn.textContent = "ON";
-        console.log("Música pausada");
+        bgMusic.volume = musicVolume.value;
+        bgMusic.play().catch(() => {}); // garante que vai tentar tocar
+    } else {
+        toggleMusicBtn.textContent = "OFF";
+        bgMusic.pause();
     }
 });
 
@@ -106,21 +101,37 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// ===== AJUSTAR VOLUME =====
+// ===== SLIDERS =====
 musicVolume.addEventListener("input", () => {
     bgMusic.volume = musicVolume.value;
     localStorage.setItem("dominik-musicVolume", musicVolume.value);
 });
 
-// ===== TOGGLE CLICK =====
+// Toggle click
 toggleClickSound.addEventListener("change", () => {
     localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
 });
 
-// ===== COMPACT MODE =====
+// Compact mode
 compactMode.addEventListener("change", () => {
     document.body.classList.toggle("compact-mode", compactMode.checked);
     localStorage.setItem("dominik-compact", compactMode.checked);
+});
+
+// ===== BOTÃO ON/OFF MÚSICA =====
+toggleMusicBtn.addEventListener("click", () => {
+    if (bgMusic.paused) {
+        bgMusic.play().then(() => {
+            toggleMusicBtn.textContent = "ON";
+            localStorage.setItem("dominik-musicON", "true");
+        }).catch(err => {
+            console.log("Erro ao tocar música:", err);
+        });
+    } else {
+        bgMusic.pause();
+        toggleMusicBtn.textContent = "OFF";
+        localStorage.setItem("dominik-musicON", "false");
+    }
 });
 
 // ===== NEXUS MODAL =====
@@ -224,4 +235,3 @@ brightnessSlider.addEventListener("input", () => {
 sidebarWidthSlider.addEventListener("input", () => {
     sidebar.style.width = sidebarWidthSlider.value + "px";
 });
-
