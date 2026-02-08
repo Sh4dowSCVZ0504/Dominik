@@ -183,6 +183,27 @@ body::after {
     color: #6a5cff;
 }
 
+/* ===== BOTÃO ON/OFF MÚSICA ===== */
+#toggleMusicBtn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    background: #6a5cff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.25s ease;
+}
+
+#toggleMusicBtn:hover {
+    background: #8570ff;
+    transform: scale(1.05);
+}
+
+#toggleMusicBtn:active {
+    transform: scale(0.95);
+}
+
 /* ===== CONTEÚDO CENTRAL ===== */
 #mainContent {
     width: 100%;
