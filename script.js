@@ -14,7 +14,7 @@ const clickSound = document.getElementById("clickSound");
 const musicVolume = document.getElementById("musicVolume");
 const toggleClickSound = document.getElementById("toggleClickSound");
 const compactMode = document.getElementById("compactMode");
-const toggleMusicBtn = document.getElementById("toggleMusicBtn"); // NOVO
+const toggleMusicBtn = document.getElementById("toggleMusicBtn");
 
 // ===== NEXUS =====
 const openNexusMenu = document.getElementById("openNexusMenu");
@@ -33,14 +33,10 @@ const brightnessSlider = document.getElementById("brightness");
 const sidebarWidthSlider = document.getElementById("sidebarWidth");
 
 // ===== SIDEBAR =====
-openSidebarBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("active");
-});
+openSidebarBtn.addEventListener("click", () => sidebar.classList.toggle("active"));
 
 // ===== CADERNO =====
-openNotebookBtn.addEventListener("click", () => {
-    notebook.classList.toggle("active");
-});
+openNotebookBtn.addEventListener("click", () => notebook.classList.toggle("active"));
 
 // ===== CONFIG =====
 openConfigBtn.addEventListener("click", () => {
@@ -62,60 +58,34 @@ notebookText.addEventListener("input", () => {
 
 // ===== CARREGAR DADOS =====
 window.addEventListener("load", () => {
+    // Notebook
     const savedText = localStorage.getItem("dominik-notebook");
     if (savedText) notebookText.value = savedText;
 
+    // Volume
     const savedVolume = localStorage.getItem("dominik-musicVolume");
-    if (savedVolume) {
-        musicVolume.value = savedVolume;
-        bgMusic.volume = savedVolume;
-    }
+    bgMusic.volume = savedVolume !== null ? savedVolume : musicVolume.value;
+    musicVolume.value = bgMusic.volume;
 
+    // Click
     const savedClick = localStorage.getItem("dominik-clickSound");
-    if (savedClick !== null) {
-        toggleClickSound.checked = savedClick === "true";
-    }
+    if (savedClick !== null) toggleClickSound.checked = savedClick === "true";
 
+    // Compact
     const savedCompact = localStorage.getItem("dominik-compact");
     if (savedCompact === "true") {
         compactMode.checked = true;
         document.body.classList.add("compact-mode");
     }
 
+    // Música ON/OFF
     const savedMusic = localStorage.getItem("dominik-musicON");
     if (savedMusic === "true") {
         toggleMusicBtn.textContent = "ON";
-        bgMusic.volume = musicVolume.value;
-        bgMusic.play().catch(() => {}); // garante que vai tentar tocar
     } else {
         toggleMusicBtn.textContent = "OFF";
         bgMusic.pause();
     }
-});
-
-// ===== SOM DE CLIQUE =====
-document.addEventListener("click", (e) => {
-    if (e.target.closest(".play-click") && toggleClickSound.checked) {
-        clickSound.currentTime = 0;
-        clickSound.play();
-    }
-});
-
-// ===== SLIDERS =====
-musicVolume.addEventListener("input", () => {
-    bgMusic.volume = musicVolume.value;
-    localStorage.setItem("dominik-musicVolume", musicVolume.value);
-});
-
-// Toggle click
-toggleClickSound.addEventListener("change", () => {
-    localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
-});
-
-// Compact mode
-compactMode.addEventListener("change", () => {
-    document.body.classList.toggle("compact-mode", compactMode.checked);
-    localStorage.setItem("dominik-compact", compactMode.checked);
 });
 
 // ===== BOTÃO ON/OFF MÚSICA =====
@@ -132,6 +102,30 @@ toggleMusicBtn.addEventListener("click", () => {
         toggleMusicBtn.textContent = "OFF";
         localStorage.setItem("dominik-musicON", "false");
     }
+});
+
+// ===== VOLUME =====
+musicVolume.addEventListener("input", () => {
+    bgMusic.volume = musicVolume.value;
+    localStorage.setItem("dominik-musicVolume", musicVolume.value);
+});
+
+// ===== SOM DE CLIQUE =====
+document.addEventListener("click", e => {
+    if (e.target.closest(".play-click") && toggleClickSound.checked) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+    }
+});
+
+toggleClickSound.addEventListener("change", () => {
+    localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
+});
+
+// ===== COMPACT MODE =====
+compactMode.addEventListener("change", () => {
+    document.body.classList.toggle("compact-mode", compactMode.checked);
+    localStorage.setItem("dominik-compact", compactMode.checked);
 });
 
 // ===== NEXUS MODAL =====
@@ -165,22 +159,18 @@ let flakes = [];
 function createFlakes(count) {
     snowContainer.innerHTML = "";
     flakes = [];
-
     for (let i = 0; i < count; i++) {
         const flake = document.createElement("img");
         flake.src = "assets/neve.png";
         flake.classList.add("flake");
-
         const size = Math.random() * 20 + 10;
         flake.style.width = `${size}px`;
         flake.style.position = "absolute";
         flake.style.top = `${Math.random() * window.innerHeight}px`;
         flake.style.left = `${Math.random() * window.innerWidth}px`;
-
         flake.speed = Math.random() * 1 + 0.5;
         flake.angle = Math.random() * 360;
         flake.angleSpeed = (Math.random() - 0.5) * 0.5;
-
         snowContainer.appendChild(flake);
         flakes.push(flake);
     }
@@ -192,19 +182,12 @@ function animateSnow() {
     for (let flake of flakes) {
         let top = parseFloat(flake.style.top);
         let left = parseFloat(flake.style.left);
-
         top += flake.speed;
         left += Math.sin(flake.angle * Math.PI / 180) * 0.5;
         flake.angle += flake.angleSpeed;
-
-        if (top > window.innerHeight) {
-            top = -50;
-            left = Math.random() * window.innerWidth;
-        }
-
+        if (top > window.innerHeight) top = -50, left = Math.random() * window.innerWidth;
         if (left > window.innerWidth) left = 0;
         if (left < 0) left = window.innerWidth;
-
         flake.style.top = `${top}px`;
         flake.style.left = `${left}px`;
         flake.style.transform = `rotate(${flake.angle}deg)`;
@@ -216,9 +199,7 @@ animateSnow();
 
 window.addEventListener("resize", () => {
     flakes.forEach(flake => {
-        if (parseFloat(flake.style.left) > window.innerWidth) {
-            flake.style.left = Math.random() * window.innerWidth + "px";
-        }
+        if (parseFloat(flake.style.left) > window.innerWidth) flake.style.left = Math.random() * window.innerWidth + "px";
     });
 });
 
