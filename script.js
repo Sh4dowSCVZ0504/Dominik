@@ -8,7 +8,7 @@ const snowContainer = document.getElementById("snowContainer");
 const openConfigBtn = document.getElementById("openConfig");
 const wallpaper = document.getElementById("wallpaper");
 
-// ===== MODO DESENHO ELEMENTOS =====
+// ===== MODO DESENHO =====
 const toggleDrawMode = document.getElementById("toggleDrawMode");
 const drawContainer = document.getElementById("drawContainer");
 const drawCanvas = document.getElementById("drawCanvas");
@@ -16,6 +16,10 @@ const drawColor = document.getElementById("drawColor");
 const brushSize = document.getElementById("brushSize");
 const eraserBtn = document.getElementById("eraserBtn");
 const clearCanvas = document.getElementById("clearCanvas");
+
+let isDrawing = false;
+let isEraser = false;
+const ctx = drawCanvas.getContext("2d");
 
 // ===== ÁUDIO =====
 const bgMusic = document.getElementById("bgMusic");
@@ -32,7 +36,7 @@ const nexusModalBackdrop = document.getElementById("nexusModalBackdrop");
 const confirmNexus = document.getElementById("confirmNexus");
 const launchNexus = document.getElementById("launchNexus");
 
-// ===== BACKDROP E MENU DE CONFIG =====
+// ===== CONFIG =====
 const configBackdrop = document.getElementById("configBackdrop");
 const configMenu = document.getElementById("configMenu");
 
@@ -47,6 +51,10 @@ openSidebarBtn.addEventListener("click", () => sidebar.classList.toggle("active"
 // ===== CADERNO =====
 openNotebookBtn.addEventListener("click", () => notebook.classList.toggle("active"));
 
+notebookText.addEventListener("input", () => {
+    localStorage.setItem("dominik-notebook", notebookText.value);
+});
+
 // ===== CONFIG =====
 openConfigBtn.addEventListener("click", () => {
     configMenu.classList.add("active");
@@ -58,11 +66,6 @@ configBackdrop.addEventListener("click", () => {
     configMenu.classList.remove("active");
     configBackdrop.style.opacity = "0";
     configBackdrop.style.pointerEvents = "none";
-});
-
-// ===== SALVAR TEXTO =====
-notebookText.addEventListener("input", () => {
-    localStorage.setItem("dominik-notebook", notebookText.value);
 });
 
 // ===== CARREGAR DADOS =====
@@ -92,7 +95,8 @@ window.addEventListener("load", () => {
         bgMusic.pause();
     }
 
-    // ===== CARREGAR DESENHO =====
+    resizeCanvas();
+
     const savedDrawing = localStorage.getItem("dominik-drawing");
     if (savedDrawing) {
         const img = new Image();
@@ -160,16 +164,14 @@ launchNexus.addEventListener("click", () => {
     );
 });
 
-// ===== MODO DESENHO =====
-let isDrawing = false;
-let isEraser = false;
-const ctx = drawCanvas.getContext("2d");
-
+// ===== MODO DESENHO LÓGICA =====
 function resizeCanvas() {
+    const imageData = ctx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
     drawCanvas.width = drawCanvas.offsetWidth;
-    drawCanvas.height = 400;
+    drawCanvas.height = drawCanvas.offsetHeight;
+    ctx.putImageData(imageData, 0, 0);
 }
-resizeCanvas();
+
 window.addEventListener("resize", resizeCanvas);
 
 toggleDrawMode.addEventListener("click", () => {
@@ -177,14 +179,33 @@ toggleDrawMode.addEventListener("click", () => {
     drawContainer.style.display = isHidden ? "block" : "none";
     notebookText.style.display = isHidden ? "none" : "block";
     toggleDrawMode.textContent = isHidden ? "📝 Modo Texto" : "🎨 Modo Desenho";
+    if (isHidden) resizeCanvas();
 });
 
+function getPosition(e) {
+    const rect = drawCanvas.getBoundingClientRect();
+    if (e.touches) {
+        return {
+            x: e.touches[0].clientX - rect.left,
+            y: e.touches[0].clientY - rect.top
+        };
+    }
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+}
+
 function startDrawing(e) {
+    e.preventDefault();
     isDrawing = true;
-    draw(e);
+    const pos = getPosition(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
 }
 
 function stopDrawing() {
+    if (!isDrawing) return;
     isDrawing = false;
     ctx.beginPath();
     saveCanvas();
@@ -192,10 +213,9 @@ function stopDrawing() {
 
 function draw(e) {
     if (!isDrawing) return;
+    e.preventDefault();
 
-    const rect = drawCanvas.getBoundingClientRect();
-    const x = (e.clientX || e.touches?.[0].clientX) - rect.left;
-    const y = (e.clientY || e.touches?.[0].clientY) - rect.top;
+    const pos = getPosition(e);
 
     ctx.lineWidth = brushSize.value;
     ctx.lineCap = "round";
@@ -207,23 +227,22 @@ function draw(e) {
         ctx.strokeStyle = drawColor.value;
     }
 
-    ctx.lineTo(x, y);
+    ctx.lineTo(pos.x, pos.y);
     ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
 }
 
 drawCanvas.addEventListener("mousedown", startDrawing);
 drawCanvas.addEventListener("mouseup", stopDrawing);
 drawCanvas.addEventListener("mousemove", draw);
+drawCanvas.addEventListener("mouseleave", stopDrawing);
 
-drawCanvas.addEventListener("touchstart", startDrawing);
+drawCanvas.addEventListener("touchstart", startDrawing, { passive: false });
 drawCanvas.addEventListener("touchend", stopDrawing);
-drawCanvas.addEventListener("touchmove", draw);
+drawCanvas.addEventListener("touchmove", draw, { passive: false });
 
 eraserBtn.addEventListener("click", () => {
     isEraser = !isEraser;
-    eraserBtn.textContent = isEraser ? "Pincel" : "Borracha";
+    eraserBtn.textContent = isEraser ? "🖌️ Pincel" : "🧽 Borracha";
 });
 
 clearCanvas.addEventListener("click", () => {
@@ -232,7 +251,7 @@ clearCanvas.addEventListener("click", () => {
 });
 
 function saveCanvas() {
-    const dataURL = drawCanvas.toDataURL();
+    const dataURL = drawCanvas.toDataURL("image/png");
     localStorage.setItem("dominik-drawing", dataURL);
 }
 
@@ -280,13 +299,6 @@ function animateSnow() {
 }
 
 animateSnow();
-
-window.addEventListener("resize", () => {
-    flakes.forEach(flake => {
-        if (parseFloat(flake.style.left) > window.innerWidth)
-            flake.style.left = Math.random() * window.innerWidth + "px";
-    });
-});
 
 snowAmountSlider.addEventListener("input", () => {
     flocoCount = parseInt(snowAmountSlider.value);
