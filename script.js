@@ -8,6 +8,15 @@ const snowContainer = document.getElementById("snowContainer");
 const openConfigBtn = document.getElementById("openConfig");
 const wallpaper = document.getElementById("wallpaper");
 
+// ===== MODO DESENHO ELEMENTOS =====
+const toggleDrawMode = document.getElementById("toggleDrawMode");
+const drawContainer = document.getElementById("drawContainer");
+const drawCanvas = document.getElementById("drawCanvas");
+const drawColor = document.getElementById("drawColor");
+const brushSize = document.getElementById("brushSize");
+const eraserBtn = document.getElementById("eraserBtn");
+const clearCanvas = document.getElementById("clearCanvas");
+
 // ===== ÁUDIO =====
 const bgMusic = document.getElementById("bgMusic");
 const clickSound = document.getElementById("clickSound");
@@ -51,34 +60,30 @@ configBackdrop.addEventListener("click", () => {
     configBackdrop.style.pointerEvents = "none";
 });
 
-// ===== SALVAR CADERNO =====
+// ===== SALVAR TEXTO =====
 notebookText.addEventListener("input", () => {
     localStorage.setItem("dominik-notebook", notebookText.value);
 });
 
 // ===== CARREGAR DADOS =====
 window.addEventListener("load", () => {
-    // Notebook
+
     const savedText = localStorage.getItem("dominik-notebook");
     if (savedText) notebookText.value = savedText;
 
-    // Volume
     const savedVolume = localStorage.getItem("dominik-musicVolume");
     bgMusic.volume = savedVolume !== null ? savedVolume : musicVolume.value;
     musicVolume.value = bgMusic.volume;
 
-    // Click
     const savedClick = localStorage.getItem("dominik-clickSound");
     if (savedClick !== null) toggleClickSound.checked = savedClick === "true";
 
-    // Compact
     const savedCompact = localStorage.getItem("dominik-compact");
     if (savedCompact === "true") {
         compactMode.checked = true;
         document.body.classList.add("compact-mode");
     }
 
-    // Música ON/OFF
     const savedMusic = localStorage.getItem("dominik-musicON");
     if (savedMusic === "true") {
         toggleMusicBtn.textContent = "ON";
@@ -86,16 +91,22 @@ window.addEventListener("load", () => {
         toggleMusicBtn.textContent = "OFF";
         bgMusic.pause();
     }
+
+    // ===== CARREGAR DESENHO =====
+    const savedDrawing = localStorage.getItem("dominik-drawing");
+    if (savedDrawing) {
+        const img = new Image();
+        img.src = savedDrawing;
+        img.onload = () => ctx.drawImage(img, 0, 0);
+    }
 });
 
-// ===== BOTÃO ON/OFF MÚSICA =====
+// ===== MÚSICA =====
 toggleMusicBtn.addEventListener("click", () => {
     if (bgMusic.paused) {
         bgMusic.play().then(() => {
             toggleMusicBtn.textContent = "ON";
             localStorage.setItem("dominik-musicON", "true");
-        }).catch(err => {
-            console.log("Erro ao tocar música:", err);
         });
     } else {
         bgMusic.pause();
@@ -104,13 +115,11 @@ toggleMusicBtn.addEventListener("click", () => {
     }
 });
 
-// ===== VOLUME =====
 musicVolume.addEventListener("input", () => {
     bgMusic.volume = musicVolume.value;
     localStorage.setItem("dominik-musicVolume", musicVolume.value);
 });
 
-// ===== SOM DE CLIQUE =====
 document.addEventListener("click", e => {
     if (e.target.closest(".play-click") && toggleClickSound.checked) {
         clickSound.currentTime = 0;
@@ -122,13 +131,12 @@ toggleClickSound.addEventListener("change", () => {
     localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
 });
 
-// ===== COMPACT MODE =====
 compactMode.addEventListener("change", () => {
     document.body.classList.toggle("compact-mode", compactMode.checked);
     localStorage.setItem("dominik-compact", compactMode.checked);
 });
 
-// ===== NEXUS MODAL =====
+// ===== NEXUS =====
 openNexusMenu.addEventListener("click", () => {
     nexusModal.classList.add("active");
     nexusModalBackdrop.classList.add("active");
@@ -152,7 +160,83 @@ launchNexus.addEventListener("click", () => {
     );
 });
 
-// ===== NEVE ANIMADA =====
+// ===== MODO DESENHO =====
+let isDrawing = false;
+let isEraser = false;
+const ctx = drawCanvas.getContext("2d");
+
+function resizeCanvas() {
+    drawCanvas.width = drawCanvas.offsetWidth;
+    drawCanvas.height = 400;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+toggleDrawMode.addEventListener("click", () => {
+    const isHidden = drawContainer.style.display === "none";
+    drawContainer.style.display = isHidden ? "block" : "none";
+    notebookText.style.display = isHidden ? "none" : "block";
+    toggleDrawMode.textContent = isHidden ? "📝 Modo Texto" : "🎨 Modo Desenho";
+});
+
+function startDrawing(e) {
+    isDrawing = true;
+    draw(e);
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    ctx.beginPath();
+    saveCanvas();
+}
+
+function draw(e) {
+    if (!isDrawing) return;
+
+    const rect = drawCanvas.getBoundingClientRect();
+    const x = (e.clientX || e.touches?.[0].clientX) - rect.left;
+    const y = (e.clientY || e.touches?.[0].clientY) - rect.top;
+
+    ctx.lineWidth = brushSize.value;
+    ctx.lineCap = "round";
+
+    if (isEraser) {
+        ctx.globalCompositeOperation = "destination-out";
+    } else {
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = drawColor.value;
+    }
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+}
+
+drawCanvas.addEventListener("mousedown", startDrawing);
+drawCanvas.addEventListener("mouseup", stopDrawing);
+drawCanvas.addEventListener("mousemove", draw);
+
+drawCanvas.addEventListener("touchstart", startDrawing);
+drawCanvas.addEventListener("touchend", stopDrawing);
+drawCanvas.addEventListener("touchmove", draw);
+
+eraserBtn.addEventListener("click", () => {
+    isEraser = !isEraser;
+    eraserBtn.textContent = isEraser ? "Pincel" : "Borracha";
+});
+
+clearCanvas.addEventListener("click", () => {
+    ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+    localStorage.removeItem("dominik-drawing");
+});
+
+function saveCanvas() {
+    const dataURL = drawCanvas.toDataURL();
+    localStorage.setItem("dominik-drawing", dataURL);
+}
+
+// ===== NEVE =====
 let flocoCount = parseInt(snowAmountSlider.value);
 let flakes = [];
 
@@ -199,11 +283,11 @@ animateSnow();
 
 window.addEventListener("resize", () => {
     flakes.forEach(flake => {
-        if (parseFloat(flake.style.left) > window.innerWidth) flake.style.left = Math.random() * window.innerWidth + "px";
+        if (parseFloat(flake.style.left) > window.innerWidth)
+            flake.style.left = Math.random() * window.innerWidth + "px";
     });
 });
 
-// ===== SLIDERS =====
 snowAmountSlider.addEventListener("input", () => {
     flocoCount = parseInt(snowAmountSlider.value);
     createFlakes(flocoCount);
