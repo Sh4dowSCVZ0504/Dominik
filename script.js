@@ -82,13 +82,17 @@ window.addEventListener("load", () => {
     }
 });
 
-// ===== ATIVAR MÚSICA NO PRIMEIRO CLIQUE =====
-document.addEventListener("click", () => {
+// ===== ATIVAR MÚSICA AMBIENTE =====
+function initMusic() {
     if (bgMusic.paused) {
         bgMusic.volume = musicVolume.value;
-        bgMusic.play().catch(() => {});
+        bgMusic.play().catch(err => {
+            console.warn("Música não pôde tocar automaticamente:", err);
+        });
     }
-}, { once: true });
+}
+// Executar música apenas no primeiro clique do botão abrir sidebar
+openSidebarBtn.addEventListener("click", initMusic, { once: true });
 
 // ===== SOM DE CLIQUE =====
 document.addEventListener("click", (e) => {
@@ -98,18 +102,18 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// Volume
+// ===== AJUSTAR VOLUME =====
 musicVolume.addEventListener("input", () => {
     bgMusic.volume = musicVolume.value;
     localStorage.setItem("dominik-musicVolume", musicVolume.value);
 });
 
-// Toggle click
+// ===== TOGGLE CLICK =====
 toggleClickSound.addEventListener("change", () => {
     localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
 });
 
-// Compact mode
+// ===== COMPACT MODE =====
 compactMode.addEventListener("change", () => {
     document.body.classList.toggle("compact-mode", compactMode.checked);
     localStorage.setItem("dominik-compact", compactMode.checked);
