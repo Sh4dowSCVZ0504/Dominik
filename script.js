@@ -14,6 +14,7 @@ const clickSound = document.getElementById("clickSound");
 const musicVolume = document.getElementById("musicVolume");
 const toggleClickSound = document.getElementById("toggleClickSound");
 const compactMode = document.getElementById("compactMode");
+const toggleMusicBtn = document.getElementById("toggleMusicBtn");
 
 // ===== NEXUS =====
 const openNexusMenu = document.getElementById("openNexusMenu");
@@ -82,17 +83,20 @@ window.addEventListener("load", () => {
     }
 });
 
-// ===== ATIVAR MÚSICA AMBIENTE =====
-function initMusic() {
+// ===== BOTÃO ON/OFF MÚSICA =====
+toggleMusicBtn.addEventListener("click", () => {
     if (bgMusic.paused) {
         bgMusic.volume = musicVolume.value;
-        bgMusic.play().catch(err => {
-            console.warn("Música não pôde tocar automaticamente:", err);
-        });
+        bgMusic.play().then(() => {
+            toggleMusicBtn.textContent = "OFF";
+            console.log("Música ligada");
+        }).catch(err => console.error("Erro ao tocar música:", err));
+    } else {
+        bgMusic.pause();
+        toggleMusicBtn.textContent = "ON";
+        console.log("Música pausada");
     }
-}
-// Executar música apenas no primeiro clique do botão abrir sidebar
-openSidebarBtn.addEventListener("click", initMusic, { once: true });
+});
 
 // ===== SOM DE CLIQUE =====
 document.addEventListener("click", (e) => {
