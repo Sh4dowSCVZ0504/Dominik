@@ -8,6 +8,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="draw.css">
+    <link rel="stylesheet" href="login.css">
 
     <!-- Fonte -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -35,6 +36,11 @@
         <img src="assets/config.png" id="openConfig" class="play-click" alt="Configurações">
         <img src="assets/nexus.png" id="openNexusMenu" class="play-click" alt="Nexus Vanguard">
         <img src="assets/user.png" id="openLoginMenu" class="play-click" alt="Login">
+
+        <!-- STATUS DO USUÁRIO -->
+        <div id="userDisplay" class="user-status">
+            Não logado
+        </div>
     </aside>
 
     <!-- BACKDROP CONFIG -->
@@ -74,35 +80,27 @@
         </label>
     </div>
 
-    <!-- MODAL LOGIN -->
-    <div id="loginModalBackdrop"></div>
+    <!-- ================= LOGIN MODAL ================= -->
 
     <div id="loginModal">
-        <h2>Conta Dominik</h2>
+        <div class="login-box">
 
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="senha" placeholder="Senha">
+            <span id="closeLogin" class="close-login">✖</span>
 
-        <button onclick="register(
-            document.getElementById('email').value,
-            document.getElementById('senha').value
-        )">
-            Criar Conta
-        </button>
+            <h2>Conta Dominik</h2>
 
-        <button onclick="login(
-            document.getElementById('email').value,
-            document.getElementById('senha').value
-        )">
-            Entrar
-        </button>
+            <input type="email" id="username" placeholder="Email">
+            <input type="password" id="password" placeholder="Senha">
 
-        <button onclick="logout()">
-            Sair
-        </button>
+            <button id="loginBtn">Entrar</button>
+            <button id="registerBtn">Criar Conta</button>
+            <button id="logoutBtn" style="display:none;">Sair</button>
+
+        </div>
     </div>
 
-    <!-- MODAL NEXUS -->
+    <!-- ================= MODAL NEXUS ================= -->
+
     <div id="nexusModalBackdrop"></div>
 
     <div id="nexusModal">
@@ -124,9 +122,9 @@
         </button>
     </div>
 
-    <!-- CONTEÚDO CENTRAL -->
-    <main id="mainContent">
+    <!-- ================= CONTEÚDO ================= -->
 
+    <main id="mainContent">
         <section id="notebook">
 
             <div class="notebook-topbar">
@@ -153,15 +151,16 @@
             </div>
 
         </section>
-
     </main>
 
     <!-- FIREBASE AUTH -->
     <script type="module" src="auth.js"></script>
+
+    <!-- LOGIN JS (UI) -->
+    <script type="module" src="login.js"></script>
 
     <!-- JS PRINCIPAL -->
     <script src="script.js"></script>
 
 </body>
 </html>
-
