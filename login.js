@@ -1,5 +1,5 @@
 // ============================
-// IMPORTS FIREBASE (MODULE)
+// FIREBASE IMPORTS (MODULE)
 // ============================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -12,7 +12,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // ============================
-// CONFIG DO SEU FIREBASE
+// CONFIG FIREBASE
 // ============================
 
 const firebaseConfig = {
@@ -36,14 +36,14 @@ const auth = getAuth(app);
 // ============================
 
 const loginModal = document.getElementById("loginModal");
-const openLoginBtn = document.getElementById("openLogin");
+const openLoginBtn = document.getElementById("openLoginMenu"); // 🔥 CORRIGIDO
 const closeLoginBtn = document.getElementById("closeLogin");
 
 const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
-const emailInput = document.getElementById("username"); // usa como email
+const emailInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 
 const userDisplay = document.getElementById("userDisplay");
@@ -52,16 +52,16 @@ const userDisplay = document.getElementById("userDisplay");
 // ABRIR / FECHAR MODAL
 // ============================
 
-if (openLoginBtn) {
-    openLoginBtn.onclick = () => {
+if (openLoginBtn && loginModal) {
+    openLoginBtn.addEventListener("click", () => {
         loginModal.style.display = "flex";
-    };
+    });
 }
 
-if (closeLoginBtn) {
-    closeLoginBtn.onclick = () => {
+if (closeLoginBtn && loginModal) {
+    closeLoginBtn.addEventListener("click", () => {
         loginModal.style.display = "none";
-    };
+    });
 }
 
 // ============================
@@ -69,7 +69,7 @@ if (closeLoginBtn) {
 // ============================
 
 if (registerBtn) {
-    registerBtn.onclick = async () => {
+    registerBtn.addEventListener("click", async () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
@@ -81,11 +81,12 @@ if (registerBtn) {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             alert("Conta criada com sucesso!");
+            clearInputs();
             loginModal.style.display = "none";
         } catch (error) {
             alert("Erro: " + error.message);
         }
-    };
+    });
 }
 
 // ============================
@@ -93,17 +94,32 @@ if (registerBtn) {
 // ============================
 
 if (loginBtn) {
-    loginBtn.onclick = async () => {
+    loginBtn.addEventListener("click", async () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
+        if (!email || !password) {
+            alert("Preencha todos os campos.");
+            return;
+        }
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            clearInputs();
             loginModal.style.display = "none";
         } catch (error) {
             alert("Erro: " + error.message);
         }
-    };
+    });
+}
+
+// Login com Enter
+if (passwordInput) {
+    passwordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            loginBtn.click();
+        }
+    });
 }
 
 // ============================
@@ -111,9 +127,9 @@ if (loginBtn) {
 // ============================
 
 if (logoutBtn) {
-    logoutBtn.onclick = async () => {
+    logoutBtn.addEventListener("click", async () => {
         await signOut(auth);
-    };
+    });
 }
 
 // ============================
@@ -129,3 +145,12 @@ onAuthStateChanged(auth, (user) => {
         if (logoutBtn) logoutBtn.style.display = "none";
     }
 });
+
+// ============================
+// FUNÇÃO AUXILIAR
+// ============================
+
+function clearInputs() {
+    if (emailInput) emailInput.value = "";
+    if (passwordInput) passwordInput.value = "";
+}
