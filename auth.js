@@ -26,7 +26,7 @@ const firebaseConfig = {
 };
 
 // ============================
-// INICIALIZAR
+// INICIALIZAR FIREBASE
 // ============================
 
 const app = initializeApp(firebaseConfig);
@@ -36,86 +36,101 @@ const auth = getAuth(app);
 // ELEMENTOS HTML
 // ============================
 
-const emailInput = document.getElementById("email");
-const senhaInput = document.getElementById("senha");
-
-const registerBtn = document.getElementById("registerBtn");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-
-const userStatus = document.getElementById("userStatus");
 const loginModal = document.getElementById("loginModal");
+const loginBackdrop = document.getElementById("loginModalBackdrop");
 const openLoginMenu = document.getElementById("openLoginMenu");
 
 // ============================
-// REGISTRO
-// ============================
-
-if (registerBtn) {
-    registerBtn.addEventListener("click", () => {
-        const email = emailInput.value;
-        const senha = senhaInput.value;
-
-        createUserWithEmailAndPassword(auth, email, senha)
-            .then(() => {
-                alert("Conta criada com sucesso!");
-            })
-            .catch(error => {
-                alert("Erro: " + error.message);
-            });
-    });
-}
-
-// ============================
-// LOGIN
-// ============================
-
-if (loginBtn) {
-    loginBtn.addEventListener("click", () => {
-        const email = emailInput.value;
-        const senha = senhaInput.value;
-
-        signInWithEmailAndPassword(auth, email, senha)
-            .then(() => {
-                loginModal.style.display = "none";
-            })
-            .catch(error => {
-                alert("Erro: " + error.message);
-            });
-    });
-}
-
-// ============================
-// LOGOUT
-// ============================
-
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        signOut(auth);
-    });
-}
-
-// ============================
-// DETECTAR USUÁRIO
-// ============================
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        userStatus.textContent = "Logado como: " + user.email;
-        logoutBtn.style.display = "block";
-    } else {
-        userStatus.textContent = "Não logado";
-        logoutBtn.style.display = "none";
-    }
-});
-
-// ============================
-// ABRIR LOGIN
+// ABRIR / FECHAR MODAL
 // ============================
 
 if (openLoginMenu) {
     openLoginMenu.addEventListener("click", () => {
-        loginModal.style.display = "flex";
+        loginModal.classList.add("active");
+        loginBackdrop.classList.add("active");
     });
 }
 
+if (loginBackdrop) {
+    loginBackdrop.addEventListener("click", () => {
+        loginModal.classList.remove("active");
+        loginBackdrop.classList.remove("active");
+    });
+}
+
+// ============================
+// FUNÇÃO REGISTRAR (usada no HTML)
+// ============================
+
+window.register = function(email, senha) {
+
+    if (!email || !senha) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+            alert("Conta criada com sucesso!");
+        })
+        .catch(error => {
+            alert("Erro: " + error.message);
+        });
+};
+
+// ============================
+// FUNÇÃO LOGIN (usada no HTML)
+// ============================
+
+window.login = function(email, senha) {
+
+    if (!email || !senha) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    signInWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+            loginModal.classList.remove("active");
+            loginBackdrop.classList.remove("active");
+        })
+        .catch(error => {
+            alert("Erro: " + error.message);
+        });
+};
+
+// ============================
+// FUNÇÃO LOGOUT (usada no HTML)
+// ============================
+
+window.logout = function() {
+    signOut(auth);
+};
+
+// ============================
+// DETECTAR USUÁRIO LOGADO
+// ============================
+
+onAuthStateChanged(auth, (user) => {
+
+    const loginIcon = document.getElementById("openLoginMenu");
+
+    if (user) {
+
+        console.log("Logado como:", user.email);
+
+        if (loginIcon) {
+            loginIcon.src = "assets/user.png";
+            loginIcon.title = user.email;
+        }
+
+    } else {
+
+        console.log("Não logado");
+
+        if (loginIcon) {
+            loginIcon.src = "assets/login.png";
+            loginIcon.title = "Login";
+        }
+    }
+});
