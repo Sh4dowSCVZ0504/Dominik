@@ -33,15 +33,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // ============================
-// ELEMENTOS HTML
+// ELEMENTOS
 // ============================
 
 const loginModal = document.getElementById("loginModal");
 const loginBackdrop = document.getElementById("loginModalBackdrop");
 const openLoginMenu = document.getElementById("openLoginMenu");
 
+const emailInput = document.getElementById("email");
+const senhaInput = document.getElementById("senha");
+
 // ============================
-// ABRIR / FECHAR MODAL
+// ABRIR MODAL
 // ============================
 
 if (openLoginMenu) {
@@ -51,64 +54,72 @@ if (openLoginMenu) {
     });
 }
 
+// ============================
+// FECHAR MODAL
+// ============================
+
 if (loginBackdrop) {
     loginBackdrop.addEventListener("click", () => {
-        loginModal.classList.remove("active");
-        loginBackdrop.classList.remove("active");
+        fecharModal();
     });
 }
 
+function fecharModal() {
+    loginModal.classList.remove("active");
+    loginBackdrop.classList.remove("active");
+}
+
 // ============================
-// FUNÇÃO REGISTRAR (usada no HTML)
+// REGISTER (usado no HTML)
 // ============================
 
-window.register = function(email, senha) {
+window.register = async function(email, senha) {
 
     if (!email || !senha) {
         alert("Preencha todos os campos.");
         return;
     }
 
-    createUserWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-            alert("Conta criada com sucesso!");
-        })
-        .catch(error => {
-            alert("Erro: " + error.message);
-        });
+    try {
+        await createUserWithEmailAndPassword(auth, email, senha);
+        alert("Conta criada com sucesso!");
+        limparCampos();
+        fecharModal();
+    } catch (error) {
+        alert(traduzirErro(error.code));
+    }
 };
 
 // ============================
-// FUNÇÃO LOGIN (usada no HTML)
+// LOGIN (usado no HTML)
 // ============================
 
-window.login = function(email, senha) {
+window.login = async function(email, senha) {
 
     if (!email || !senha) {
         alert("Preencha todos os campos.");
         return;
     }
 
-    signInWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-            loginModal.classList.remove("active");
-            loginBackdrop.classList.remove("active");
-        })
-        .catch(error => {
-            alert("Erro: " + error.message);
-        });
+    try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        limparCampos();
+        fecharModal();
+    } catch (error) {
+        alert(traduzirErro(error.code));
+    }
 };
 
 // ============================
-// FUNÇÃO LOGOUT (usada no HTML)
+// LOGOUT (usado no HTML)
 // ============================
 
-window.logout = function() {
-    signOut(auth);
+window.logout = async function() {
+    await signOut(auth);
 };
 
 // ============================
-// DETECTAR USUÁRIO LOGADO
+// OBSERVAR USUÁRIO
 // ============================
 
 onAuthStateChanged(auth, (user) => {
@@ -134,3 +145,29 @@ onAuthStateChanged(auth, (user) => {
         }
     }
 });
+
+// ============================
+// FUNÇÕES AUXILIARES
+// ============================
+
+function limparCampos() {
+    if (emailInput) emailInput.value = "";
+    if (senhaInput) senhaInput.value = "";
+}
+
+function traduzirErro(code) {
+    switch(code) {
+        case "auth/email-already-in-use":
+            return "Esse email já está em uso.";
+        case "auth/invalid-email":
+            return "Email inválido.";
+        case "auth/weak-password":
+            return "A senha precisa ter pelo menos 6 caracteres.";
+        case "auth/user-not-found":
+            return "Usuário não encontrado.";
+        case "auth/wrong-password":
+            return "Senha incorreta.";
+        default:
+            return "Erro: " + code;
+    }
+}
