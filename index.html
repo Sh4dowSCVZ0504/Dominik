@@ -34,6 +34,7 @@
         <img src="assets/caderno.png" id="openNotebook" class="play-click" alt="Caderno">
         <img src="assets/config.png" id="openConfig" class="play-click" alt="Configurações">
         <img src="assets/nexus.png" id="openNexusMenu" class="play-click" alt="Nexus Vanguard">
+        <img src="assets/user.png" id="openLoginMenu" class="play-click" alt="Login">
     </aside>
 
     <!-- BACKDROP CONFIG -->
@@ -73,6 +74,34 @@
         </label>
     </div>
 
+    <!-- MODAL LOGIN -->
+    <div id="loginModalBackdrop"></div>
+
+    <div id="loginModal">
+        <h2>Conta Dominik</h2>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="senha" placeholder="Senha">
+
+        <button onclick="register(
+            document.getElementById('email').value,
+            document.getElementById('senha').value
+        )">
+            Criar Conta
+        </button>
+
+        <button onclick="login(
+            document.getElementById('email').value,
+            document.getElementById('senha').value
+        )">
+            Entrar
+        </button>
+
+        <button onclick="logout()">
+            Sair
+        </button>
+    </div>
+
     <!-- MODAL NEXUS -->
     <div id="nexusModalBackdrop"></div>
 
@@ -98,22 +127,18 @@
     <!-- CONTEÚDO CENTRAL -->
     <main id="mainContent">
 
-        <!-- CADERNO -->
         <section id="notebook">
 
-            <!-- TOPBAR -->
             <div class="notebook-topbar">
                 <button id="toggleDrawMode" class="play-click">
                     🎨 Modo Desenho
                 </button>
             </div>
 
-            <!-- MODO TEXTO -->
             <textarea
                 id="notebookText"
                 placeholder="Escreva o que quiser..."></textarea>
 
-            <!-- MODO DESENHO -->
             <div id="drawContainer">
 
                 <div class="drawTools">
@@ -131,8 +156,12 @@
 
     </main>
 
-    <!-- JS -->
+    <!-- FIREBASE AUTH -->
+    <script type="module" src="auth.js"></script>
+
+    <!-- JS PRINCIPAL -->
     <script src="script.js"></script>
 
 </body>
 </html>
+
