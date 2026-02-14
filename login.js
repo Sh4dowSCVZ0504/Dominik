@@ -1,8 +1,40 @@
 // ============================
-// SISTEMA DE LOGIN - DOMINIK
+// IMPORTS FIREBASE (MODULE)
 // ============================
 
-// Elementos
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// ============================
+// CONFIG DO SEU FIREBASE
+// ============================
+
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_AUTH_DOMAIN",
+  projectId: "SEU_PROJECT_ID",
+  storageBucket: "SEU_BUCKET",
+  messagingSenderId: "SEU_SENDER_ID",
+  appId: "SEU_APP_ID"
+};
+
+// ============================
+// INICIALIZAR FIREBASE
+// ============================
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ============================
+// ELEMENTOS HTML
+// ============================
+
 const loginModal = document.getElementById("loginModal");
 const openLoginBtn = document.getElementById("openLogin");
 const closeLoginBtn = document.getElementById("closeLogin");
@@ -11,7 +43,7 @@ const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
-const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("username"); // usa como email
 const passwordInput = document.getElementById("password");
 
 const userDisplay = document.getElementById("userDisplay");
@@ -33,30 +65,26 @@ if (closeLoginBtn) {
 }
 
 // ============================
-// REGISTRO
+// REGISTRAR
 // ============================
 
 if (registerBtn) {
-    registerBtn.onclick = () => {
-        const username = usernameInput.value.trim();
+    registerBtn.onclick = async () => {
+        const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        if (!username || !password) {
+        if (!email || !password) {
             alert("Preencha todos os campos.");
             return;
         }
 
-        if (localStorage.getItem("user_" + username)) {
-            alert("Usuário já existe.");
-            return;
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            alert("Conta criada com sucesso!");
+            loginModal.style.display = "none";
+        } catch (error) {
+            alert("Erro: " + error.message);
         }
-
-        localStorage.setItem(
-            "user_" + username,
-            JSON.stringify({ password: password })
-        );
-
-        alert("Conta criada com sucesso!");
     };
 }
 
@@ -65,27 +93,16 @@ if (registerBtn) {
 // ============================
 
 if (loginBtn) {
-    loginBtn.onclick = () => {
-        const username = usernameInput.value.trim();
+    loginBtn.onclick = async () => {
+        const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        const userData = localStorage.getItem("user_" + username);
-
-        if (!userData) {
-            alert("Usuário não encontrado.");
-            return;
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            loginModal.style.display = "none";
+        } catch (error) {
+            alert("Erro: " + error.message);
         }
-
-        const parsedData = JSON.parse(userData);
-
-        if (parsedData.password !== password) {
-            alert("Senha incorreta.");
-            return;
-        }
-
-        localStorage.setItem("loggedUser", username);
-        updateUserUI();
-        loginModal.style.display = "none";
     };
 }
 
@@ -94,32 +111,21 @@ if (loginBtn) {
 // ============================
 
 if (logoutBtn) {
-    logoutBtn.onclick = () => {
-        localStorage.removeItem("loggedUser");
-        updateUserUI();
+    logoutBtn.onclick = async () => {
+        await signOut(auth);
     };
 }
 
 // ============================
-// ATUALIZAR UI
+// OBSERVAR ESTADO DO USUÁRIO
 // ============================
 
-function updateUserUI() {
-    const loggedUser = localStorage.getItem("loggedUser");
-
-    if (loggedUser) {
-        if (userDisplay) userDisplay.textContent = "👤 " + loggedUser;
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        if (userDisplay) userDisplay.textContent = "👤 " + user.email;
         if (logoutBtn) logoutBtn.style.display = "inline-block";
     } else {
         if (userDisplay) userDisplay.textContent = "Não logado";
         if (logoutBtn) logoutBtn.style.display = "none";
     }
-}
-
-// ============================
-// INICIAR
-// ============================
-
-document.addEventListener("DOMContentLoaded", () => {
-    updateUserUI();
 });
