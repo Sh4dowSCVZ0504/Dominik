@@ -1,139 +1,125 @@
-/* ===========================
-   LOGIN MODAL - DOMINIK
-=========================== */
+/* ============================
+   FUNDO ESCURO DO MODAL
+============================ */
 
-/* Fundo escuro */
 #loginModal {
+    display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(6px);
-    display: none;
     justify-content: center;
     align-items: center;
     z-index: 9999;
-}
-
-/* Caixa principal */
-#loginModal > div {
-    background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
-    padding: 30px;
-    border-radius: 16px;
-    width: 320px;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.05);
     animation: fadeIn 0.3s ease;
-    position: relative;
 }
 
-/* Título */
-#loginModal h2 {
+/* ============================
+   CAIXA CENTRAL
+============================ */
+
+.login-box {
+    background: #111;
+    border: 1px solid #222;
+    padding: 30px;
+    width: 320px;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
     text-align: center;
+    animation: scaleIn 0.25s ease;
+}
+
+/* ============================
+   TÍTULO
+============================ */
+
+.login-box h2 {
     margin-bottom: 20px;
-    color: #ffffff;
-    font-weight: 600;
+    font-size: 22px;
+    color: white;
     letter-spacing: 1px;
 }
 
-/* Inputs */
-#loginModal input {
+/* ============================
+   INPUTS
+============================ */
+
+.login-box input {
     width: 100%;
     padding: 10px;
     margin-bottom: 12px;
     border-radius: 8px;
-    border: none;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: white;
     outline: none;
-    background: #111;
-    color: #fff;
-    font-size: 14px;
-    transition: 0.2s ease;
+    transition: 0.2s;
 }
 
-#loginModal input:focus {
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+.login-box input:focus {
+    border-color: #666;
+    box-shadow: 0 0 6px #444;
 }
 
-/* Botões */
-#loginModal button {
+/* ============================
+   BOTÕES
+============================ */
+
+.login-box button {
     width: 100%;
     padding: 10px;
-    margin-top: 6px;
+    margin-top: 8px;
     border-radius: 8px;
     border: none;
-    cursor: pointer;
-    font-weight: 500;
-    transition: 0.2s ease;
-}
-
-/* Botão Entrar */
-#loginBtn {
-    background: #00bcd4;
-    color: #000;
-}
-
-#loginBtn:hover {
-    background: #00e5ff;
-    transform: scale(1.03);
-}
-
-/* Botão Criar Conta */
-#registerBtn {
-    background: #333;
-    color: #fff;
-}
-
-#registerBtn:hover {
-    background: #444;
-    transform: scale(1.03);
-}
-
-/* Botão Fechar */
-#closeLogin {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    background: transparent;
-    color: #aaa;
-    font-size: 16px;
-    cursor: pointer;
-    width: auto;
-}
-
-#closeLogin:hover {
-    color: #fff;
-}
-
-/* Botão Logout */
-#logoutBtn {
-    background: #ff4444;
+    background: #222;
     color: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: none;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: 0.2s;
+}
+
+.login-box button:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+/* Botão logout separado */
+#logoutBtn {
+    background: #8b0000;
 }
 
 #logoutBtn:hover {
-    background: #ff0000;
-    transform: scale(1.05);
+    background: #b30000;
 }
 
-/* Nome do usuário */
-#userDisplay {
-    margin-right: 10px;
-    font-weight: 500;
-    color: #00e5ff;
+/* ============================
+   BOTÃO FECHAR (X)
+============================ */
+
+.close-login {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    opacity: 0.6;
+    transition: 0.2s;
 }
 
-/* Animação */
+.close-login:hover {
+    opacity: 1;
+}
+
+/* ============================
+   ANIMAÇÕES
+============================ */
+
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
