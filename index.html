@@ -6,15 +6,13 @@
 
 <title>Dominik | Official Platform</title>
 
-<!-- Fonte -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- CSS -->
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="draw.css">
 <link rel="stylesheet" href="login.css">
-
 </head>
+
 <body>
 
 <!-- ================= BACKGROUND ================= -->
@@ -25,137 +23,139 @@
 <audio id="bgMusic" src="assets/Ambiente.mp3" loop></audio>
 <audio id="clickSound" src="assets/click.mp3"></audio>
 
-<!-- ================= HEADER ================= -->
-<header class="main-header">
-    <h1>DOMINIK</h1>
-    <p>Interactive Digital Core</p>
-</header>
+<!-- ================= APP CONTAINER ================= -->
+<div id="app">
 
-<!-- ================= SIDEBAR ================= -->
-<aside id="sidebar">
+    <!-- ===== HEADER ===== -->
+    <header class="main-header">
+        <div class="logo-area">
+            <h1>DOMINIK</h1>
+            <span>Interactive Digital Core</span>
+        </div>
+    </header>
 
-    <nav class="nav-tabs">
-        <button class="tab-btn active" data-tab="homeTab">🏠 Início</button>
-        <button class="tab-btn" data-tab="notebookTab">📒 Notebook</button>
-        <button class="tab-btn" data-tab="chatTab">💬 Conversas</button>
-        <button class="tab-btn" data-tab="gamesTab">🎮 Games</button>
-        <button class="tab-btn" data-tab="configTab">⚙️ Config</button>
-        <button class="tab-btn" data-tab="accountTab">👤 Conta</button>
-    </nav>
+    <!-- ===== LAYOUT ===== -->
+    <div class="layout">
 
-    <div id="userDisplay" class="user-status">
-        Não logado
+        <!-- ===== SIDEBAR ===== -->
+        <aside id="sidebar">
+            <nav class="nav-tabs">
+                <button class="tab-btn active" data-tab="homeTab">🏠 Início</button>
+                <button class="tab-btn" data-tab="notebookTab">📒 Notebook</button>
+                <button class="tab-btn" data-tab="chatTab">💬 Conversas</button>
+                <button class="tab-btn" data-tab="gamesTab">🎮 Games</button>
+                <button class="tab-btn" data-tab="configTab">⚙️ Config</button>
+                <button class="tab-btn" data-tab="accountTab">👤 Conta</button>
+            </nav>
+
+            <div id="userDisplay" class="user-status">
+                Não logado
+            </div>
+        </aside>
+
+        <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+        <main id="mainContent">
+
+            <!-- ===== INÍCIO ===== -->
+            <section class="tab-content active" id="homeTab">
+                <h2>Bem-vindo ao Dominik</h2>
+                <p>
+                    Plataforma interativa criada para organização,
+                    desenvolvimento, comunicação e entretenimento.
+                </p>
+            </section>
+
+            <!-- ===== NOTEBOOK ===== -->
+            <section class="tab-content" id="notebookTab">
+
+                <div class="notebook-topbar">
+                    <button id="toggleDrawMode">🎨 Modo Desenho</button>
+                </div>
+
+                <textarea id="notebookText" placeholder="Escreva o que quiser..."></textarea>
+
+                <div id="drawContainer">
+                    <div class="drawTools">
+                        <input type="color" id="drawColor" value="#00ffcc">
+                        <input type="range" id="brushSize" min="1" max="20" value="3">
+                        <button id="eraserBtn">Borracha</button>
+                        <button id="clearCanvas">Limpar</button>
+                    </div>
+
+                    <canvas id="drawCanvas"></canvas>
+                </div>
+
+            </section>
+
+            <!-- ===== CONVERSAS ===== -->
+            <section class="tab-content" id="chatTab">
+                <h2>Conversas</h2>
+
+                <div class="chat-box">
+                    <div class="chat-messages">
+                        <p>Sistema de chat em desenvolvimento...</p>
+                    </div>
+
+                    <div class="chat-input">
+                        <input type="text" placeholder="Digite sua mensagem..." disabled>
+                        <button disabled>Enviar</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== GAMES ===== -->
+            <section class="tab-content" id="gamesTab">
+                <h2>Área de Games</h2>
+
+                <div class="game-card">
+                    <h3>Nexus Vanguard</h3>
+                    <p>
+                        Tower Defense estratégico onde cada escolha importa.
+                        Evolua, defenda e sobreviva às ondas inimigas.
+                    </p>
+
+                    <button id="openNexusMenu">
+                        Abrir Nexus Vanguard
+                    </button>
+                </div>
+            </section>
+
+            <!-- ===== CONFIG ===== -->
+            <section class="tab-content" id="configTab">
+                <h2>Configurações</h2>
+
+                <label>Quantidade de neve</label>
+                <input type="range" id="snowAmount" min="0" max="200" value="50">
+
+                <label>Brilho do wallpaper</label>
+                <input type="range" id="brightness" min="0.1" max="2" step="0.1" value="1">
+
+                <label>Volume da música</label>
+                <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
+
+                <label>
+                    <input type="checkbox" id="toggleClickSound" checked>
+                    Som de clique
+                </label>
+            </section>
+
+            <!-- ===== CONTA ===== -->
+            <section class="tab-content" id="accountTab">
+                <h2>Conta</h2>
+
+                <button id="openLoginMenu">Entrar / Criar Conta</button>
+                <button id="logoutBtn" style="display:none;">Sair</button>
+            </section>
+
+        </main>
+
     </div>
-
-</aside>
-
-<!-- ================= CONTEÚDO ================= -->
-<main id="mainContent">
-
-    <!-- ===== INÍCIO ===== -->
-    <section class="tab-content active" id="homeTab">
-        <h2>Bem-vindo ao Dominik</h2>
-        <p>
-            Plataforma interativa criada para organização, desenvolvimento,
-            comunicação e entretenimento.
-        </p>
-    </section>
-
-    <!-- ===== NOTEBOOK ===== -->
-    <section class="tab-content" id="notebookTab">
-
-        <div class="notebook-topbar">
-            <button id="toggleDrawMode">🎨 Modo Desenho</button>
-        </div>
-
-        <textarea
-            id="notebookText"
-            placeholder="Escreva o que quiser...">
-        </textarea>
-
-        <div id="drawContainer">
-
-            <div class="drawTools">
-                <input type="color" id="drawColor" value="#00ffcc">
-                <input type="range" id="brushSize" min="1" max="20" value="3">
-                <button id="eraserBtn">Borracha</button>
-                <button id="clearCanvas">Limpar</button>
-            </div>
-
-            <canvas id="drawCanvas"></canvas>
-
-        </div>
-
-    </section>
-
-    <!-- ===== CONVERSAS ===== -->
-    <section class="tab-content" id="chatTab">
-        <h2>Conversas</h2>
-
-        <div class="chat-box">
-            <div class="chat-messages">
-                <p>Sistema de chat em desenvolvimento...</p>
-            </div>
-
-            <div class="chat-input">
-                <input type="text" placeholder="Digite sua mensagem..." disabled>
-                <button disabled>Enviar</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== GAMES ===== -->
-    <section class="tab-content" id="gamesTab">
-        <h2>Área de Games</h2>
-
-        <div class="game-card">
-            <h3>Nexus Vanguard</h3>
-            <p>
-                Tower Defense estratégico onde cada escolha importa.
-                Evolua, defenda e sobreviva às ondas inimigas.
-            </p>
-
-            <button id="openNexusMenu">
-                Abrir Nexus Vanguard
-            </button>
-        </div>
-    </section>
-
-    <!-- ===== CONFIG ===== -->
-    <section class="tab-content" id="configTab">
-        <h2>Configurações</h2>
-
-        <label>Quantidade de neve</label>
-        <input type="range" id="snowAmount" min="0" max="200" value="50">
-
-        <label>Brilho do wallpaper</label>
-        <input type="range" id="brightness" min="0.1" max="2" step="0.1" value="1">
-
-        <label>Volume da música</label>
-        <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
-
-        <label>
-            <input type="checkbox" id="toggleClickSound" checked>
-            Som de clique
-        </label>
-    </section>
-
-    <!-- ===== CONTA ===== -->
-    <section class="tab-content" id="accountTab">
-        <h2>Conta</h2>
-
-        <button id="openLoginMenu">Entrar / Criar Conta</button>
-        <button id="logoutBtn" style="display:none;">Sair</button>
-    </section>
-
-</main>
+</div>
 
 <!-- ================= LOGIN MODAL ================= -->
 <div id="loginModal">
     <div class="login-box">
-
         <span id="closeLogin">✖</span>
-
         <h2>Conta Dominik</h2>
 
         <input type="email" id="username" placeholder="Email">
@@ -163,7 +163,6 @@
 
         <button id="loginBtn">Entrar</button>
         <button id="registerBtn">Criar Conta</button>
-
     </div>
 </div>
 
