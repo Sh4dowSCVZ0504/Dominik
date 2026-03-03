@@ -20,7 +20,7 @@ html, body {
     position: fixed;
     inset: 0;
     background-image:
-        linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.9)),
+        linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
         url("assets/wallpaper.jpg");
     background-position: center;
     background-size: cover;
@@ -41,17 +41,28 @@ body::after {
     z-index: -1;
 }
 
-/* ===== HEADER ===== */
-.main-header {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 20;
+/* ===== APP STRUCTURE ===== */
+#app {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.main-header h1 {
+/* ===== HEADER ===== */
+.main-header {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-area {
+    text-align: center;
+}
+
+.logo-area h1 {
     font-size: 42px;
     letter-spacing: 3px;
     background: linear-gradient(90deg,#00ffcc,#00aaff);
@@ -59,32 +70,27 @@ body::after {
     color: transparent;
 }
 
-.main-header p {
+.logo-area span {
     opacity: 0.6;
-    margin-top: 8px;
 }
 
-/* ===== SIDEBAR ===== */
+/* ===== LAYOUT ===== */
+.layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* ===== SIDEBAR FIXA ===== */
 #sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100vh;
-    width: 220px;
+    width: 240px;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(14px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 120px 20px 40px 20px;
-    transform: translateX(100%);
-    transition: transform 0.4s ease;
-    box-shadow: -20px 0 60px rgba(0,0,0,0.8);
-    z-index: 1000;
-}
-
-#sidebar.active {
-    transform: translateX(0);
+    padding: 40px 20px;
+    border-right: 1px solid #111;
 }
 
 /* ===== NAV TABS ===== */
@@ -102,6 +108,7 @@ body::after {
     color: white;
     cursor: pointer;
     transition: 0.3s;
+    text-align: left;
 }
 
 .tab-btn:hover {
@@ -122,18 +129,17 @@ body::after {
     font-size: 14px;
 }
 
-/* ===== MAIN ===== */
+/* ===== MAIN CONTENT ===== */
 #mainContent {
-    width: 100%;
-    height: 100%;
-    padding: 120px 80px;
+    flex: 1;
+    padding: 60px;
     overflow-y: auto;
 }
 
 /* ===== TABS ===== */
 .tab-content {
     display: none;
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.4s ease;
 }
 
 .tab-content.active {
