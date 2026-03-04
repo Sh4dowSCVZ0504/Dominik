@@ -1,5 +1,5 @@
 // ============================
-// FIREBASE IMPORTS (MODULE)
+// 🔥 FIREBASE IMPORTS (MODULE)
 // ============================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -12,7 +12,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // ============================
-// CONFIG FIREBASE
+// ⚙ CONFIG FIREBASE
 // ============================
 
 const firebaseConfig = {
@@ -24,19 +24,15 @@ const firebaseConfig = {
   appId: "SEU_APP_ID"
 };
 
-// ============================
-// INICIALIZAR FIREBASE
-// ============================
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // ============================
-// ELEMENTOS HTML
+// 🎯 ELEMENTOS
 // ============================
 
 const loginModal = document.getElementById("loginModal");
-const openLoginBtn = document.getElementById("openLoginMenu"); // 🔥 CORRIGIDO
+const openLoginBtn = document.getElementById("openLoginMenu");
 const closeLoginBtn = document.getElementById("closeLogin");
 
 const loginBtn = document.getElementById("loginBtn");
@@ -49,23 +45,27 @@ const passwordInput = document.getElementById("password");
 const userDisplay = document.getElementById("userDisplay");
 
 // ============================
-// ABRIR / FECHAR MODAL
+// 🪟 MODAL CONTROL
 // ============================
 
-if (openLoginBtn && loginModal) {
-    openLoginBtn.addEventListener("click", () => {
-        loginModal.style.display = "flex";
-    });
+function openModal() {
+    if (loginModal) loginModal.style.display = "flex";
 }
 
-if (closeLoginBtn && loginModal) {
-    closeLoginBtn.addEventListener("click", () => {
-        loginModal.style.display = "none";
-    });
+function closeModal() {
+    if (loginModal) loginModal.style.display = "none";
 }
+
+if (openLoginBtn) openLoginBtn.addEventListener("click", openModal);
+if (closeLoginBtn) closeLoginBtn.addEventListener("click", closeModal);
+
+// Fecha ao clicar fora
+window.addEventListener("click", (e) => {
+    if (e.target === loginModal) closeModal();
+});
 
 // ============================
-// REGISTRAR
+// 🆕 REGISTRAR
 // ============================
 
 if (registerBtn) {
@@ -74,23 +74,23 @@ if (registerBtn) {
         const password = passwordInput.value.trim();
 
         if (!email || !password) {
-            alert("Preencha todos os campos.");
+            showMessage("Preencha todos os campos.");
             return;
         }
 
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            alert("Conta criada com sucesso!");
+            showMessage("Conta criada com sucesso! 🔥");
             clearInputs();
-            loginModal.style.display = "none";
+            closeModal();
         } catch (error) {
-            alert("Erro: " + error.message);
+            showMessage("Erro: " + error.message);
         }
     });
 }
 
 // ============================
-// LOGIN
+// 🔐 LOGIN
 // ============================
 
 if (loginBtn) {
@@ -99,47 +99,51 @@ if (loginBtn) {
         const password = passwordInput.value.trim();
 
         if (!email || !password) {
-            alert("Preencha todos os campos.");
+            showMessage("Preencha todos os campos.");
             return;
         }
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            showMessage("Login realizado com sucesso! 👑");
             clearInputs();
-            loginModal.style.display = "none";
+            closeModal();
         } catch (error) {
-            alert("Erro: " + error.message);
+            showMessage("Erro: " + error.message);
         }
     });
 }
 
-// Login com Enter
+// Enter para login
 if (passwordInput) {
-    passwordInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-            loginBtn.click();
-        }
+    passwordInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") loginBtn.click();
     });
 }
 
 // ============================
-// LOGOUT
+// 🚪 LOGOUT
 // ============================
 
 if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
         await signOut(auth);
+        showMessage("Você saiu da conta.");
     });
 }
 
 // ============================
-// OBSERVAR ESTADO DO USUÁRIO
+// 👁 OBSERVADOR DE SESSÃO
 // ============================
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        if (userDisplay) userDisplay.textContent = "👤 " + user.email;
-        if (logoutBtn) logoutBtn.style.display = "inline-block";
+        if (userDisplay) {
+            const username = user.email.split("@")[0];
+            userDisplay.textContent = "👤 " + username;
+        }
+
+        if (logoutBtn) logoutBtn.style.display = "block";
     } else {
         if (userDisplay) userDisplay.textContent = "Não logado";
         if (logoutBtn) logoutBtn.style.display = "none";
@@ -147,10 +151,15 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ============================
-// FUNÇÃO AUXILIAR
+// 🧼 UTILITÁRIOS
 // ============================
 
 function clearInputs() {
     if (emailInput) emailInput.value = "";
     if (passwordInput) passwordInput.value = "";
+}
+
+function showMessage(message) {
+    console.log(message);
+    alert(message); // pode trocar por sistema visual depois
 }
