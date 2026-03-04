@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dominik | Official Platform</title>
+<title>Dominik | Digital Core Platform</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="draw.css">
@@ -23,14 +23,22 @@
 <audio id="bgMusic" src="assets/Ambiente.mp3" loop></audio>
 <audio id="clickSound" src="assets/click.mp3"></audio>
 
-<!-- ================= APP CONTAINER ================= -->
+<!-- ================= APP ================= -->
 <div id="app">
 
     <!-- ===== HEADER ===== -->
     <header class="main-header">
-        <div class="logo-area">
-            <h1>DOMINIK</h1>
-            <span>Interactive Digital Core</span>
+        <div class="header-left">
+            <button id="toggleSidebar">☰</button>
+            <div class="logo-area">
+                <h1>DOMINIK</h1>
+                <span>Interactive Digital Core</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button id="toggleTheme">🌙</button>
+            <button id="openLoginMenu">👤</button>
         </div>
     </header>
 
@@ -38,58 +46,117 @@
     <div class="layout">
 
         <!-- ===== SIDEBAR ===== -->
-        <aside id="sidebar">
+        <aside id="sidebar" class="expanded">
+
+            <div class="sidebar-top">
+                <div class="user-status" id="userDisplay">
+                    <span class="status-dot offline"></span>
+                    Não logado
+                </div>
+            </div>
+
             <nav class="nav-tabs">
-                <button class="tab-btn active" data-tab="homeTab">🏠 Início</button>
-                <button class="tab-btn" data-tab="notebookTab">📒 Notebook</button>
-                <button class="tab-btn" data-tab="chatTab">💬 Conversas</button>
-                <button class="tab-btn" data-tab="gamesTab">🎮 Games</button>
-                <button class="tab-btn" data-tab="configTab">⚙️ Config</button>
-                <button class="tab-btn" data-tab="accountTab">👤 Conta</button>
+
+                <button class="tab-btn active" data-tab="homeTab">
+                    <span class="icon">🏠</span>
+                    <span class="label">Início</span>
+                </button>
+
+                <button class="tab-btn" data-tab="notebookTab">
+                    <span class="icon">📒</span>
+                    <span class="label">Notebook</span>
+                </button>
+
+                <button class="tab-btn" data-tab="chatTab">
+                    <span class="icon">💬</span>
+                    <span class="label">Conversas</span>
+                </button>
+
+                <button class="tab-btn" data-tab="gamesTab">
+                    <span class="icon">🎮</span>
+                    <span class="label">Games</span>
+                </button>
+
+                <button class="tab-btn" data-tab="configTab">
+                    <span class="icon">⚙️</span>
+                    <span class="label">Config</span>
+                </button>
+
+                <button class="tab-btn" data-tab="accountTab">
+                    <span class="icon">👤</span>
+                    <span class="label">Conta</span>
+                </button>
+
             </nav>
 
-            <div id="userDisplay" class="user-status">
-                Não logado
+            <div class="sidebar-footer">
+                <small>Dominik Core v2.0</small>
             </div>
+
         </aside>
 
-        <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+        <!-- ===== MAIN CONTENT ===== -->
         <main id="mainContent">
 
             <!-- ===== INÍCIO ===== -->
             <section class="tab-content active" id="homeTab">
-                <h2>Bem-vindo ao Dominik</h2>
-                <p>
-                    Plataforma interativa criada para organização,
-                    desenvolvimento, comunicação e entretenimento.
-                </p>
+                <div class="section-header">
+                    <h2>Bem-vindo ao Dominik</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="home-grid">
+                    <div class="card">
+                        <h3>Organização</h3>
+                        <p>Gerencie ideias, anotações e projetos em um só lugar.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Comunicação</h3>
+                        <p>Sistema de chat integrado para interação futura.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Entretenimento</h3>
+                        <p>Minigames e experiências interativas exclusivas.</p>
+                    </div>
+                </div>
             </section>
 
             <!-- ===== NOTEBOOK ===== -->
             <section class="tab-content" id="notebookTab">
 
-                <div class="notebook-topbar">
-                    <button id="toggleDrawMode">🎨 Modo Desenho</button>
+                <div class="workspace-header">
+                    <h2>Notebook</h2>
+                    <button id="toggleDrawMode">🎨 Alternar Desenho</button>
                 </div>
 
-                <textarea id="notebookText" placeholder="Escreva o que quiser..."></textarea>
+                <div class="workspace-body">
 
-                <div id="drawContainer">
-                    <div class="drawTools">
-                        <input type="color" id="drawColor" value="#00ffcc">
-                        <input type="range" id="brushSize" min="1" max="20" value="3">
-                        <button id="eraserBtn">Borracha</button>
-                        <button id="clearCanvas">Limpar</button>
+                    <textarea id="notebookText"
+                        placeholder="Escreva suas ideias, códigos ou pensamentos...">
+                    </textarea>
+
+                    <div id="drawContainer">
+                        <div class="drawTools">
+                            <input type="color" id="drawColor" value="#00ffcc">
+                            <input type="range" id="brushSize" min="1" max="20" value="3">
+                            <button id="eraserBtn">Borracha</button>
+                            <button id="clearCanvas">Limpar</button>
+                        </div>
+
+                        <canvas id="drawCanvas"></canvas>
                     </div>
 
-                    <canvas id="drawCanvas"></canvas>
                 </div>
-
             </section>
 
-            <!-- ===== CONVERSAS ===== -->
+            <!-- ===== CHAT ===== -->
             <section class="tab-content" id="chatTab">
-                <h2>Conversas</h2>
+                <div class="section-header">
+                    <h2>Conversas</h2>
+                    <div class="section-line"></div>
+                </div>
 
                 <div class="chat-box">
                     <div class="chat-messages">
@@ -105,7 +172,10 @@
 
             <!-- ===== GAMES ===== -->
             <section class="tab-content" id="gamesTab">
-                <h2>Área de Games</h2>
+                <div class="section-header">
+                    <h2>Área de Games</h2>
+                    <div class="section-line"></div>
+                </div>
 
                 <div class="game-card">
                     <h3>Nexus Vanguard</h3>
@@ -122,33 +192,56 @@
 
             <!-- ===== CONFIG ===== -->
             <section class="tab-content" id="configTab">
-                <h2>Configurações</h2>
+                <div class="section-header">
+                    <h2>Configurações</h2>
+                    <div class="section-line"></div>
+                </div>
 
-                <label>Quantidade de neve</label>
-                <input type="range" id="snowAmount" min="0" max="200" value="50">
+                <div class="config-grid">
 
-                <label>Brilho do wallpaper</label>
-                <input type="range" id="brightness" min="0.1" max="2" step="0.1" value="1">
+                    <div class="config-card">
+                        <label>Quantidade de neve</label>
+                        <input type="range" id="snowAmount" min="0" max="200" value="50">
+                    </div>
 
-                <label>Volume da música</label>
-                <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
+                    <div class="config-card">
+                        <label>Brilho do wallpaper</label>
+                        <input type="range" id="brightness" min="0.1" max="2" step="0.1" value="1">
+                    </div>
 
-                <label>
-                    <input type="checkbox" id="toggleClickSound" checked>
-                    Som de clique
-                </label>
+                    <div class="config-card">
+                        <label>Volume da música</label>
+                        <input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
+                    </div>
+
+                    <div class="config-card checkbox">
+                        <label>
+                            <input type="checkbox" id="toggleClickSound" checked>
+                            Som de clique
+                        </label>
+                    </div>
+
+                </div>
             </section>
 
             <!-- ===== CONTA ===== -->
             <section class="tab-content" id="accountTab">
-                <h2>Conta</h2>
+                <div class="section-header">
+                    <h2>Conta</h2>
+                    <div class="section-line"></div>
+                </div>
 
-                <button id="openLoginMenu">Entrar / Criar Conta</button>
-                <button id="logoutBtn" style="display:none;">Sair</button>
+                <div class="account-actions">
+                    <button id="openLoginMenuAccount">
+                        Entrar / Criar Conta
+                    </button>
+                    <button id="logoutBtn" style="display:none;">
+                        Sair
+                    </button>
+                </div>
             </section>
 
         </main>
-
     </div>
 </div>
 
@@ -166,8 +259,9 @@
     </div>
 </div>
 
-<!-- ================= SCRIPT ABAS ================= -->
+<!-- ================= SCRIPT CORE ================= -->
 <script>
+/* ===== SISTEMA DE TABS ===== */
 document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
 
@@ -182,6 +276,31 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
             .classList.add("active");
     });
 });
+
+/* ===== SIDEBAR COLLAPSE ===== */
+document.getElementById("toggleSidebar")
+.addEventListener("click", () => {
+    document.getElementById("sidebar")
+        .classList.toggle("collapsed");
+});
+
+/* ===== ABRIR LOGIN PELO HEADER ===== */
+document.getElementById("openLoginMenu")
+.addEventListener("click", () => {
+    document.getElementById("loginModal")
+        .style.display = "flex";
+});
+
+/* ===== ABRIR LOGIN PELA ABA CONTA ===== */
+const loginAccountBtn =
+document.getElementById("openLoginMenuAccount");
+
+if(loginAccountBtn){
+    loginAccountBtn.addEventListener("click", () => {
+        document.getElementById("loginModal")
+            .style.display = "flex";
+    });
+}
 </script>
 
 <!-- ================= SEUS SCRIPTS ================= -->
