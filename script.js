@@ -1,14 +1,10 @@
-// ===== ELEMENTOS =====
-const openSidebarBtn = document.getElementById("openSidebar");
+// ================= ELEMENTOS =================
 const sidebar = document.getElementById("sidebar");
-const openNotebookBtn = document.getElementById("openNotebook");
-const notebook = document.getElementById("notebook");
 const notebookText = document.getElementById("notebookText");
 const snowContainer = document.getElementById("snowContainer");
-const openConfigBtn = document.getElementById("openConfig");
 const wallpaper = document.getElementById("wallpaper");
 
-// ===== MODO DESENHO =====
+// ================= DRAW =================
 const toggleDrawMode = document.getElementById("toggleDrawMode");
 const drawContainer = document.getElementById("drawContainer");
 const drawCanvas = document.getElementById("drawCanvas");
@@ -21,54 +17,22 @@ let isDrawing = false;
 let isEraser = false;
 const ctx = drawCanvas.getContext("2d");
 
-// ===== ÁUDIO =====
+// ================= ÁUDIO =================
 const bgMusic = document.getElementById("bgMusic");
 const clickSound = document.getElementById("clickSound");
 const musicVolume = document.getElementById("musicVolume");
 const toggleClickSound = document.getElementById("toggleClickSound");
-const compactMode = document.getElementById("compactMode");
-const toggleMusicBtn = document.getElementById("toggleMusicBtn");
 
-// ===== NEXUS =====
-const openNexusMenu = document.getElementById("openNexusMenu");
-const nexusModal = document.getElementById("nexusModal");
-const nexusModalBackdrop = document.getElementById("nexusModalBackdrop");
-const confirmNexus = document.getElementById("confirmNexus");
-const launchNexus = document.getElementById("launchNexus");
-
-// ===== CONFIG =====
-const configBackdrop = document.getElementById("configBackdrop");
-const configMenu = document.getElementById("configMenu");
-
-// ===== SLIDERS =====
+// ================= SLIDERS =================
 const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
-const sidebarWidthSlider = document.getElementById("sidebarWidth");
 
-// ===== SIDEBAR =====
-openSidebarBtn.addEventListener("click", () => sidebar.classList.toggle("active"));
-
-// ===== CADERNO =====
-openNotebookBtn.addEventListener("click", () => notebook.classList.toggle("active"));
-
+// ================= NOTEBOOK SAVE =================
 notebookText.addEventListener("input", () => {
     localStorage.setItem("dominik-notebook", notebookText.value);
 });
 
-// ===== CONFIG =====
-openConfigBtn.addEventListener("click", () => {
-    configMenu.classList.add("active");
-    configBackdrop.style.opacity = "1";
-    configBackdrop.style.pointerEvents = "auto";
-});
-
-configBackdrop.addEventListener("click", () => {
-    configMenu.classList.remove("active");
-    configBackdrop.style.opacity = "0";
-    configBackdrop.style.pointerEvents = "none";
-});
-
-// ===== CARREGAR DADOS =====
+// ================= LOAD =================
 window.addEventListener("load", () => {
 
     const savedText = localStorage.getItem("dominik-notebook");
@@ -81,20 +45,6 @@ window.addEventListener("load", () => {
     const savedClick = localStorage.getItem("dominik-clickSound");
     if (savedClick !== null) toggleClickSound.checked = savedClick === "true";
 
-    const savedCompact = localStorage.getItem("dominik-compact");
-    if (savedCompact === "true") {
-        compactMode.checked = true;
-        document.body.classList.add("compact-mode");
-    }
-
-    const savedMusic = localStorage.getItem("dominik-musicON");
-    if (savedMusic === "true") {
-        toggleMusicBtn.textContent = "ON";
-    } else {
-        toggleMusicBtn.textContent = "OFF";
-        bgMusic.pause();
-    }
-
     resizeCanvas();
 
     const savedDrawing = localStorage.getItem("dominik-drawing");
@@ -105,91 +55,56 @@ window.addEventListener("load", () => {
     }
 });
 
-// ===== MÚSICA =====
-toggleMusicBtn.addEventListener("click", () => {
-    if (bgMusic.paused) {
-        bgMusic.play().then(() => {
-            toggleMusicBtn.textContent = "ON";
-            localStorage.setItem("dominik-musicON", "true");
-        });
-    } else {
-        bgMusic.pause();
-        toggleMusicBtn.textContent = "OFF";
-        localStorage.setItem("dominik-musicON", "false");
-    }
-});
-
+// ================= MUSIC =================
 musicVolume.addEventListener("input", () => {
     bgMusic.volume = musicVolume.value;
     localStorage.setItem("dominik-musicVolume", musicVolume.value);
-});
-
-document.addEventListener("click", e => {
-    if (e.target.closest(".play-click") && toggleClickSound.checked) {
-        clickSound.currentTime = 0;
-        clickSound.play();
-    }
 });
 
 toggleClickSound.addEventListener("change", () => {
     localStorage.setItem("dominik-clickSound", toggleClickSound.checked);
 });
 
-compactMode.addEventListener("change", () => {
-    document.body.classList.toggle("compact-mode", compactMode.checked);
-    localStorage.setItem("dominik-compact", compactMode.checked);
-});
+// ================= DRAW SYSTEM =================
 
-// ===== NEXUS =====
-openNexusMenu.addEventListener("click", () => {
-    nexusModal.classList.add("active");
-    nexusModalBackdrop.classList.add("active");
-});
-
-nexusModalBackdrop.addEventListener("click", () => {
-    nexusModal.classList.remove("active");
-    nexusModalBackdrop.classList.remove("active");
-    confirmNexus.checked = false;
-    launchNexus.disabled = true;
-});
-
-confirmNexus.addEventListener("change", () => {
-    launchNexus.disabled = !confirmNexus.checked;
-});
-
-launchNexus.addEventListener("click", () => {
-    window.open(
-        "https://sh4dowscvz0504.github.io/Dominik/tower-defense/",
-        "_blank"
-    );
-});
-
-// ===== MODO DESENHO LÓGICA =====
 function resizeCanvas() {
-    const imageData = ctx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+    const temp = document.createElement("canvas");
+    temp.width = drawCanvas.width;
+    temp.height = drawCanvas.height;
+    temp.getContext("2d").drawImage(drawCanvas, 0, 0);
+
     drawCanvas.width = drawCanvas.offsetWidth;
     drawCanvas.height = drawCanvas.offsetHeight;
-    ctx.putImageData(imageData, 0, 0);
+
+    ctx.drawImage(temp, 0, 0);
 }
 
 window.addEventListener("resize", resizeCanvas);
 
 toggleDrawMode.addEventListener("click", () => {
-    const isHidden = drawContainer.style.display === "none";
+
+    const isHidden = drawContainer.style.display === "none" || drawContainer.style.display === "";
+
     drawContainer.style.display = isHidden ? "block" : "none";
     notebookText.style.display = isHidden ? "none" : "block";
+
     toggleDrawMode.textContent = isHidden ? "📝 Modo Texto" : "🎨 Modo Desenho";
-    if (isHidden) resizeCanvas();
+
+    if (isHidden) {
+        setTimeout(resizeCanvas, 50);
+    }
 });
 
 function getPosition(e) {
     const rect = drawCanvas.getBoundingClientRect();
+
     if (e.touches) {
         return {
             x: e.touches[0].clientX - rect.left,
             y: e.touches[0].clientY - rect.top
         };
     }
+
     return {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
@@ -255,49 +170,51 @@ function saveCanvas() {
     localStorage.setItem("dominik-drawing", dataURL);
 }
 
-// ===== NEVE =====
+// ================= SNOW SYSTEM =================
+
 let flocoCount = parseInt(snowAmountSlider.value);
 let flakes = [];
 
 function createFlakes(count) {
     snowContainer.innerHTML = "";
     flakes = [];
+
     for (let i = 0; i < count; i++) {
-        const flake = document.createElement("img");
-        flake.src = "assets/neve.png";
+        const flake = document.createElement("div");
         flake.classList.add("flake");
-        const size = Math.random() * 20 + 10;
-        flake.style.width = `${size}px`;
+
+        const size = Math.random() * 6 + 4;
+        flake.style.width = size + "px";
+        flake.style.height = size + "px";
+        flake.style.background = "white";
+        flake.style.borderRadius = "50%";
         flake.style.position = "absolute";
-        flake.style.top = `${Math.random() * window.innerHeight}px`;
-        flake.style.left = `${Math.random() * window.innerWidth}px`;
+        flake.style.top = Math.random() * window.innerHeight + "px";
+        flake.style.left = Math.random() * window.innerWidth + "px";
         flake.speed = Math.random() * 1 + 0.5;
-        flake.angle = Math.random() * 360;
-        flake.angleSpeed = (Math.random() - 0.5) * 0.5;
+
         snowContainer.appendChild(flake);
         flakes.push(flake);
     }
 }
 
-createFlakes(flocoCount);
-
 function animateSnow() {
-    for (let flake of flakes) {
+    flakes.forEach(flake => {
         let top = parseFloat(flake.style.top);
-        let left = parseFloat(flake.style.left);
         top += flake.speed;
-        left += Math.sin(flake.angle * Math.PI / 180) * 0.5;
-        flake.angle += flake.angleSpeed;
-        if (top > window.innerHeight) top = -50, left = Math.random() * window.innerWidth;
-        if (left > window.innerWidth) left = 0;
-        if (left < 0) left = window.innerWidth;
-        flake.style.top = `${top}px`;
-        flake.style.left = `${left}px`;
-        flake.style.transform = `rotate(${flake.angle}deg)`;
-    }
+
+        if (top > window.innerHeight) {
+            top = -10;
+            flake.style.left = Math.random() * window.innerWidth + "px";
+        }
+
+        flake.style.top = top + "px";
+    });
+
     requestAnimationFrame(animateSnow);
 }
 
+createFlakes(flocoCount);
 animateSnow();
 
 snowAmountSlider.addEventListener("input", () => {
@@ -307,8 +224,4 @@ snowAmountSlider.addEventListener("input", () => {
 
 brightnessSlider.addEventListener("input", () => {
     wallpaper.style.filter = `brightness(${brightnessSlider.value})`;
-});
-
-sidebarWidthSlider.addEventListener("input", () => {
-    sidebar.style.width = sidebarWidthSlider.value + "px";
 });
