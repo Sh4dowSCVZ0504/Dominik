@@ -16,12 +16,13 @@ import {
 // ============================
 
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_AUTH_DOMAIN",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_BUCKET",
-  messagingSenderId: "SEU_SENDER_ID",
-  appId: "SEU_APP_ID"
+  apiKey: "AIzaSyD63vPgXEBns6E2P_c7L6NSSQrBe-krB_s",
+  authDomain: "dominik-52ca9.firebaseapp.com",
+  projectId: "dominik-52ca9",
+  storageBucket: "dominik-52ca9.firebasestorage.app",
+  messagingSenderId: "521924294228",
+  appId: "1:521924294228:web:3796f8c925c1bb37cb5fc1",
+  measurementId: "G-VV8WXGMK1V"
 };
 
 const app = initializeApp(firebaseConfig);
