@@ -1,34 +1,32 @@
-/* ===== RESET ===== */
+/* ================= RESET ================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Orbitron', sans-serif;
 }
 
-/* ===== BASE ===== */
-html, body {
+body, html {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
     background: radial-gradient(circle at top, #0f0f0f, #050505);
     color: #eaeaea;
+    overflow: hidden;
 }
 
-/* ===== WALLPAPER ===== */
+/* ================= WALLPAPER ================= */
 #wallpaper {
     position: fixed;
     inset: 0;
     background-image:
-        linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+        linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)),
         url("assets/wallpaper.jpg");
     background-position: center;
     background-size: cover;
-    background-repeat: no-repeat;
     z-index: -3;
 }
 
-/* ===== GRID RETRÔ ===== */
+/* ================= GRID OVERLAY ================= */
 body::after {
     content: "";
     position: fixed;
@@ -41,74 +39,121 @@ body::after {
     z-index: -1;
 }
 
-/* ===== APP STRUCTURE ===== */
+/* ================= APP ================= */
 #app {
-    position: relative;
-    z-index: 10;
     height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* ===== HEADER ===== */
+/* ================= HEADER ================= */
 .main-header {
-    height: 120px;
+    height: 80px;
+    padding: 0 30px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #111;
 }
 
-.logo-area {
-    text-align: center;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#toggleSidebar {
+    background: none;
+    border: none;
+    color: #00ffcc;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#toggleSidebar:hover {
+    transform: scale(1.2);
 }
 
 .logo-area h1 {
-    font-size: 42px;
-    letter-spacing: 3px;
+    font-size: 28px;
     background: linear-gradient(90deg,#00ffcc,#00aaff);
     -webkit-background-clip: text;
     color: transparent;
+    letter-spacing: 2px;
 }
 
 .logo-area span {
+    font-size: 12px;
     opacity: 0.6;
 }
 
-/* ===== LAYOUT ===== */
+.header-right button {
+    background: transparent;
+    border: 1px solid #222;
+    padding: 8px 14px;
+    border-radius: 20px;
+    color: #00ffcc;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.header-right button:hover {
+    background: #00ffcc;
+    color: black;
+}
+
+/* ================= LAYOUT ================= */
 .layout {
     flex: 1;
     display: flex;
     overflow: hidden;
 }
 
-/* ===== SIDEBAR FIXA ===== */
+/* ================= SIDEBAR ================= */
 #sidebar {
     width: 240px;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.7);
     backdrop-filter: blur(14px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 40px 20px;
+    padding: 30px 15px;
     border-right: 1px solid #111;
+    transition: 0.4s;
 }
 
-/* ===== NAV TABS ===== */
+#sidebar.collapsed {
+    width: 70px;
+}
+
+#sidebar.collapsed .label {
+    display: none;
+}
+
+#sidebar.collapsed .user-status {
+    font-size: 10px;
+}
+
 .nav-tabs {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
 }
 
 .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid #222;
     background: #111;
     color: white;
     cursor: pointer;
     transition: 0.3s;
-    text-align: left;
 }
 
 .tab-btn:hover {
@@ -117,50 +162,95 @@ body::after {
 }
 
 .tab-btn.active {
-    background: #00ffcc;
+    background: linear-gradient(90deg,#00ffcc,#00aaff);
     color: black;
     font-weight: bold;
 }
 
-/* ===== USER STATUS ===== */
+.sidebar-footer {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.4;
+}
+
+/* ================= USER STATUS ================= */
 .user-status {
     text-align: center;
-    opacity: 0.6;
+    margin-bottom: 20px;
     font-size: 14px;
 }
 
-/* ===== MAIN CONTENT ===== */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.status-dot.offline {
+    background: red;
+}
+
+/* ================= MAIN CONTENT ================= */
 #mainContent {
     flex: 1;
-    padding: 60px;
+    padding: 40px;
     overflow-y: auto;
 }
 
-/* ===== TABS ===== */
-.tab-content {
-    display: none;
-    animation: fadeIn 0.4s ease;
+/* ================= SECTION HEADER ================= */
+.section-header {
+    margin-bottom: 30px;
 }
 
-.tab-content.active {
-    display: block;
+.section-header h2 {
+    font-size: 26px;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.section-line {
+    width: 60px;
+    height: 3px;
+    background: #00ffcc;
+    margin-top: 6px;
 }
 
-/* ===== NOTEBOOK ===== */
+/* ================= CARDS ================= */
+.card,
+.game-card,
+.chat-box,
+.config-card {
+    background: rgba(20,20,20,0.9);
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 25px;
+    transition: 0.4s;
+}
+
+.card:hover,
+.game-card:hover {
+    transform: translateY(-6px);
+    border-color: #00ffcc;
+    box-shadow: 0 0 25px rgba(0,255,204,0.3);
+}
+
+/* ================= HOME GRID ================= */
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* ================= NOTEBOOK ================= */
+.workspace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #notebookText {
     width: 100%;
-    height: 260px;
+    height: 240px;
     margin-top: 20px;
     background: #111;
     border: 1px solid #222;
@@ -176,17 +266,13 @@ body::after {
     box-shadow: 0 0 10px rgba(0,255,204,0.3);
 }
 
-/* ===== CHAT ===== */
+/* ================= CHAT ================= */
 .chat-box {
-    margin-top: 30px;
-    background: #111;
-    padding: 25px;
-    border-radius: 15px;
-    border: 1px solid #222;
+    margin-top: 20px;
 }
 
 .chat-input {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
     gap: 10px;
 }
@@ -200,44 +286,12 @@ body::after {
     color: white;
 }
 
-/* ===== GAME CARD ===== */
-.game-card {
-    margin-top: 30px;
-    background: #111;
-    padding: 30px;
-    border-radius: 15px;
-    border: 1px solid #222;
-    transition: 0.4s;
-}
-
-.game-card:hover {
-    transform: translateY(-8px);
-    border-color: #00ffcc;
-    box-shadow: 0 0 25px rgba(0,255,204,0.4);
-}
-
-.game-card button {
-    margin-top: 15px;
-    padding: 10px 30px;
-    border-radius: 30px;
-    border: 2px solid #00ffcc;
-    background: transparent;
-    color: #00ffcc;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.game-card button:hover {
-    background: #00ffcc;
-    color: black;
-}
-
-/* ===== LOGIN MODAL ===== */
+/* ================= LOGIN MODAL ================= */
 #loginModal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     justify-content: center;
     align-items: center;
     z-index: 2000;
@@ -250,6 +304,7 @@ body::after {
     width: 320px;
     border: 1px solid #222;
     text-align: center;
+    animation: fadeIn 0.3s ease;
 }
 
 .login-box input {
