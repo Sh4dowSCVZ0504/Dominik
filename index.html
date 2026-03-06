@@ -46,10 +46,17 @@
 <aside id="sidebar" class="expanded">
 
 <div class="sidebar-top">
+
 <div class="user-status" id="userDisplay">
-<span class="status-dot offline"></span>
-Não logado
+
+<img id="userAvatar"
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+class="avatar">
+
+<span id="usernameDisplay">Não logado</span>
+
 </div>
+
 </div>
 
 <nav class="nav-tabs">
@@ -84,10 +91,15 @@ Não logado
 <span class="label">Conta</span>
 </button>
 
+<button class="tab-btn admin-tab" id="adminTabBtn" data-tab="adminTab" style="display:none;">
+<span class="icon">🛡️</span>
+<span class="label">Admin</span>
+</button>
+
 </nav>
 
 <div class="sidebar-footer">
-<small>Dominik Core v2.0</small>
+<small>Dominik Core v2.1</small>
 </div>
 
 </aside>
@@ -156,14 +168,9 @@ placeholder="Escreva suas ideias, códigos ou pensamentos..."></textarea>
 </div>
 
 <div class="chat-box">
-<div class="chat-messages">
-<p>Sistema de chat em desenvolvimento...</p>
-</div>
 
-<div class="chat-input">
-<input type="text" placeholder="Digite sua mensagem..." disabled>
-<button disabled>Enviar</button>
-</div>
+<p>Sistema social será lançado em breve.</p>
+
 </div>
 
 </section>
@@ -181,7 +188,6 @@ placeholder="Escreva suas ideias, códigos ou pensamentos..."></textarea>
 
 <p>
 Tower Defense estratégico onde cada escolha importa.
-Evolua, defenda e sobreviva às ondas inimigas.
 </p>
 
 <button id="openNexusMenu">
@@ -189,6 +195,7 @@ Abrir Nexus Vanguard
 </button>
 
 </div>
+
 </section>
 
 <section class="tab-content" id="configTab">
@@ -232,7 +239,16 @@ Som de clique
 <div class="section-line"></div>
 </div>
 
-<div class="account-actions">
+<div class="account-panel">
+
+<input type="text" id="usernameInput" placeholder="Seu nome de usuário">
+
+<input type="text" id="avatarInput" placeholder="URL da foto de perfil">
+
+<button id="saveProfile">
+Salvar Perfil
+</button>
+
 <button id="openLoginMenuAccount">
 Entrar / Criar Conta
 </button>
@@ -240,6 +256,28 @@ Entrar / Criar Conta
 <button id="logoutBtn" style="display:none;">
 Sair
 </button>
+
+<button id="adminLoginBtn">
+Entrar como Admin
+</button>
+
+</div>
+
+</section>
+
+<section class="tab-content" id="adminTab">
+
+<div class="section-header">
+<h2>Painel de Administração</h2>
+<div class="section-line"></div>
+</div>
+
+<div class="admin-panel">
+
+<h3>Acesso Administrativo</h3>
+
+<p>Área exclusiva para gerenciamento do Dominik.</p>
+
 </div>
 
 </section>
@@ -273,7 +311,6 @@ Sair
 
 <p>
 Essa área do Dominik ainda está sendo construída.
-Novos sistemas chegarão em breve.
 </p>
 
 <div class="dev-buttons">
@@ -293,91 +330,66 @@ Novos sistemas chegarão em breve.
 
 <script>
 
-document.querySelectorAll(".tab-btn").forEach(btn => {
+const adminPassword = "87236512"
 
-btn.addEventListener("click", () => {
+document.getElementById("adminLoginBtn")
+.addEventListener("click", () => {
 
-const target = btn.dataset.tab;
+const pass = prompt("Digite a senha de administrador")
 
-if(target === "gamesTab" || target === "chatTab"){
+if(pass === adminPassword){
 
-document.getElementById("devOverlay").style.display = "flex";
-return;
+document.getElementById("adminTabBtn").style.display = "flex"
+
+alert("Acesso ADMIN liberado")
+
+}else{
+
+alert("Senha incorreta")
 
 }
 
-document.querySelectorAll(".tab-btn")
-.forEach(b => b.classList.remove("active"));
+})
 
-document.querySelectorAll(".tab-content")
-.forEach(tab => tab.classList.remove("active"));
-
-btn.classList.add("active");
-
-document.getElementById(target)
-.classList.add("active");
-
-});
-
-});
-
-document.getElementById("toggleSidebar")
+document.getElementById("saveProfile")
 .addEventListener("click", () => {
 
-document.getElementById("sidebar")
-.classList.toggle("collapsed");
+const name =
+document.getElementById("usernameInput").value
 
-});
+const avatar =
+document.getElementById("avatarInput").value
 
-document.getElementById("openLoginMenu")
-.addEventListener("click", () => {
+localStorage.setItem("dominik-name", name)
+localStorage.setItem("dominik-avatar", avatar)
 
-document.getElementById("loginModal")
-.style.display = "flex";
+location.reload()
 
-});
+})
 
-const loginAccountBtn =
-document.getElementById("openLoginMenuAccount");
+window.addEventListener("load", () => {
 
-if(loginAccountBtn){
+const savedName =
+localStorage.getItem("dominik-name")
 
-loginAccountBtn.addEventListener("click", () => {
+const savedAvatar =
+localStorage.getItem("dominik-avatar")
 
-document.getElementById("loginModal")
-.style.display = "flex";
+if(savedName){
 
-});
+document.getElementById("usernameDisplay").textContent =
+savedName
 
 }
 
-document.getElementById("devCloseBtn")
-.addEventListener("click", () => {
+if(savedAvatar){
 
-document.getElementById("devOverlay")
-.style.display = "none";
+document.getElementById("userAvatar").src =
+savedAvatar
 
-});
+}
 
-document.getElementById("devHomeBtn")
-.addEventListener("click", () => {
-
-document.getElementById("devOverlay")
-.style.display = "none";
-
-document.querySelectorAll(".tab-btn")
-.forEach(b => b.classList.remove("active"));
-
-document.querySelectorAll(".tab-content")
-.forEach(tab => tab.classList.remove("active"));
-
-document.querySelector('[data-tab="homeTab"]')
-.classList.add("active");
-
-document.getElementById("homeTab")
-.classList.add("active");
-
-});
+})
 
 </script>
 
