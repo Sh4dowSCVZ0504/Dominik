@@ -28,80 +28,99 @@ const toggleClickSound = document.getElementById("toggleClickSound");
 const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
 
+// ================= USER PROFILE =================
+
+const usernameInput = document.getElementById("usernameInput");
+const avatarInput = document.getElementById("avatarInput");
+const saveProfileBtn = document.getElementById("saveProfile");
+
+const usernameDisplay = document.getElementById("usernameDisplay");
+const userAvatar = document.getElementById("userAvatar");
+
+const adminLoginBtn = document.getElementById("adminLoginBtn");
+const adminTabBtn = document.getElementById("adminTabBtn");
+
+const ADMIN_PASSWORD = "87236512";
+
 // ================= NOTEBOOK SAVE =================
 notebookText.addEventListener("input", () => {
-    localStorage.setItem("dominik-notebook", notebookText.value);
+localStorage.setItem("dominik-notebook", notebookText.value);
 });
 
 // ================= LOAD =================
 window.addEventListener("load", () => {
 
-    const savedText = localStorage.getItem("dominik-notebook");
-    if (savedText) notebookText.value = savedText;
+const savedText = localStorage.getItem("dominik-notebook");
+if (savedText) notebookText.value = savedText;
 
-    const savedVolume = localStorage.getItem("dominik-musicVolume");
-    bgMusic.volume = savedVolume !== null ? savedVolume : musicVolume.value;
-    musicVolume.value = bgMusic.volume;
+const savedVolume = localStorage.getItem("dominik-musicVolume");
+bgMusic.volume = savedVolume !== null ? savedVolume : musicVolume.value;
+musicVolume.value = bgMusic.volume;
 
-    const savedClick = localStorage.getItem("dominik-clickSound");
-    if (savedClick !== null) toggleClickSound.checked = savedClick === "true";
+const savedClick = localStorage.getItem("dominik-clickSound");
+if (savedClick !== null) toggleClickSound.checked = savedClick === "true";
 
-    const savedBrightness = localStorage.getItem("dominik-brightness");
-    if (savedBrightness) {
-        brightnessSlider.value = savedBrightness;
-        wallpaper.style.filter = `brightness(${savedBrightness})`;
-    }
+const savedBrightness = localStorage.getItem("dominik-brightness");
+if (savedBrightness) {
+brightnessSlider.value = savedBrightness;
+wallpaper.style.filter = `brightness(${savedBrightness})`;
+}
 
-    const savedSnow = localStorage.getItem("dominik-snow");
-    if (savedSnow) {
-        snowAmountSlider.value = savedSnow;
-    }
+const savedSnow = localStorage.getItem("dominik-snow");
+if (savedSnow) snowAmountSlider.value = savedSnow;
 
-    resizeCanvas();
+resizeCanvas();
 
-    const savedDrawing = localStorage.getItem("dominik-drawing");
+const savedDrawing = localStorage.getItem("dominik-drawing");
+if (savedDrawing) {
+const img = new Image();
+img.src = savedDrawing;
+img.onload = () => ctx.drawImage(img, 0, 0);
+}
 
-    if (savedDrawing) {
-        const img = new Image();
-        img.src = savedDrawing;
-        img.onload = () => ctx.drawImage(img, 0, 0);
-    }
+// ================= LOAD USER PROFILE =================
+
+const savedName = localStorage.getItem("dominik-username");
+const savedAvatar = localStorage.getItem("dominik-avatar");
+
+if (savedName && usernameDisplay) usernameDisplay.textContent = savedName;
+if (savedAvatar && userAvatar) userAvatar.src = savedAvatar;
 
 });
 
 // ================= CLICK SOUND =================
 document.addEventListener("click", () => {
 
-    if (!toggleClickSound.checked) return;
+if (!toggleClickSound.checked) return;
 
-    clickSound.currentTime = 0;
-    clickSound.play();
+clickSound.currentTime = 0;
+clickSound.play();
 
 });
 
 // ================= MUSIC =================
 musicVolume.addEventListener("input", () => {
 
-    bgMusic.volume = musicVolume.value;
-    localStorage.setItem("dominik-musicVolume", musicVolume.value);
+bgMusic.volume = musicVolume.value;
+localStorage.setItem("dominik-musicVolume", musicVolume.value);
 
 });
 
 // ================= DRAW SYSTEM =================
 
-function resizeCanvas() {
+function resizeCanvas(){
 
-    const temp = document.createElement("canvas");
+const temp = document.createElement("canvas");
 
-    temp.width = drawCanvas.width;
-    temp.height = drawCanvas.height;
+temp.width = drawCanvas.width;
+temp.height = drawCanvas.height;
 
-    temp.getContext("2d").drawImage(drawCanvas, 0, 0);
+temp.getContext("2d").drawImage(drawCanvas,0,0);
 
-    drawCanvas.width = drawCanvas.offsetWidth;
-    drawCanvas.height = drawCanvas.offsetHeight;
+drawCanvas.width = drawCanvas.offsetWidth;
+drawCanvas.height = drawCanvas.offsetHeight;
 
-    ctx.drawImage(temp, 0, 0);
+ctx.drawImage(temp,0,0);
 
 }
 
@@ -109,209 +128,262 @@ window.addEventListener("resize", resizeCanvas);
 
 toggleDrawMode.addEventListener("click", () => {
 
-    const isHidden =
-        drawContainer.style.display === "none" ||
-        drawContainer.style.display === "";
+const isHidden =
+drawContainer.style.display === "none" ||
+drawContainer.style.display === "";
 
-    drawContainer.style.display = isHidden ? "block" : "none";
-    notebookText.style.display = isHidden ? "none" : "block";
+drawContainer.style.display = isHidden ? "block" : "none";
+notebookText.style.display = isHidden ? "none" : "block";
 
-    toggleDrawMode.textContent =
-        isHidden ? "📝 Modo Texto" : "🎨 Modo Desenho";
+toggleDrawMode.textContent =
+isHidden ? "📝 Modo Texto" : "🎨 Modo Desenho";
 
-    if (isHidden) setTimeout(resizeCanvas, 50);
+if(isHidden) setTimeout(resizeCanvas,50);
 
 });
 
-function getPosition(e) {
+function getPosition(e){
 
-    const rect = drawCanvas.getBoundingClientRect();
+const rect = drawCanvas.getBoundingClientRect();
 
-    if (e.touches) {
+if(e.touches){
+return{
+x:e.touches[0].clientX-rect.left,
+y:e.touches[0].clientY-rect.top
+};
+}
 
-        return {
-            x: e.touches[0].clientX - rect.left,
-            y: e.touches[0].clientY - rect.top
-        };
-
-    }
-
-    return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-    };
+return{
+x:e.clientX-rect.left,
+y:e.clientY-rect.top
+};
 
 }
 
-function startDrawing(e) {
+function startDrawing(e){
 
-    e.preventDefault();
+e.preventDefault();
+isDrawing=true;
 
-    isDrawing = true;
+const pos=getPosition(e);
 
-    const pos = getPosition(e);
-
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-
-}
-
-function stopDrawing() {
-
-    if (!isDrawing) return;
-
-    isDrawing = false;
-    ctx.beginPath();
-
-    saveCanvas();
+ctx.beginPath();
+ctx.moveTo(pos.x,pos.y);
 
 }
 
-function draw(e) {
+function stopDrawing(){
 
-    if (!isDrawing) return;
+if(!isDrawing)return;
 
-    e.preventDefault();
+isDrawing=false;
+ctx.beginPath();
 
-    const pos = getPosition(e);
-
-    ctx.lineWidth = brushSize.value;
-    ctx.lineCap = "round";
-
-    if (isEraser) {
-
-        ctx.globalCompositeOperation = "destination-out";
-
-    } else {
-
-        ctx.globalCompositeOperation = "source-over";
-        ctx.strokeStyle = drawColor.value;
-
-    }
-
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
+saveCanvas();
 
 }
 
-drawCanvas.addEventListener("mousedown", startDrawing);
-drawCanvas.addEventListener("mouseup", stopDrawing);
-drawCanvas.addEventListener("mousemove", draw);
-drawCanvas.addEventListener("mouseleave", stopDrawing);
+function draw(e){
 
-drawCanvas.addEventListener("touchstart", startDrawing, { passive: false });
-drawCanvas.addEventListener("touchend", stopDrawing);
-drawCanvas.addEventListener("touchmove", draw, { passive: false });
+if(!isDrawing)return;
+
+e.preventDefault();
+
+const pos=getPosition(e);
+
+ctx.lineWidth=brushSize.value;
+ctx.lineCap="round";
+
+if(isEraser){
+
+ctx.globalCompositeOperation="destination-out";
+
+}else{
+
+ctx.globalCompositeOperation="source-over";
+ctx.strokeStyle=drawColor.value;
+
+}
+
+ctx.lineTo(pos.x,pos.y);
+ctx.stroke();
+
+}
+
+drawCanvas.addEventListener("mousedown",startDrawing);
+drawCanvas.addEventListener("mouseup",stopDrawing);
+drawCanvas.addEventListener("mousemove",draw);
+drawCanvas.addEventListener("mouseleave",stopDrawing);
+
+drawCanvas.addEventListener("touchstart",startDrawing,{passive:false});
+drawCanvas.addEventListener("touchend",stopDrawing);
+drawCanvas.addEventListener("touchmove",draw,{passive:false});
 
 // ================= DRAW TOOLS =================
 
-eraserBtn.addEventListener("click", () => {
+eraserBtn.addEventListener("click",()=>{
 
-    isEraser = !isEraser;
+isEraser=!isEraser;
 
-    eraserBtn.textContent =
-        isEraser ? "🖌️ Pincel" : "🧽 Borracha";
-
-});
-
-clearCanvas.addEventListener("click", () => {
-
-    ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    localStorage.removeItem("dominik-drawing");
+eraserBtn.textContent=
+isEraser?"🖌️ Pincel":"🧽 Borracha";
 
 });
 
-function saveCanvas() {
+clearCanvas.addEventListener("click",()=>{
 
-    const dataURL = drawCanvas.toDataURL("image/png");
+ctx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+localStorage.removeItem("dominik-drawing");
 
-    localStorage.setItem("dominik-drawing", dataURL);
+});
+
+function saveCanvas(){
+
+const dataURL=drawCanvas.toDataURL("image/png");
+localStorage.setItem("dominik-drawing",dataURL);
 
 }
 
 // ================= SNOW SYSTEM =================
 
-let flocoCount = parseInt(snowAmountSlider.value);
-let flakes = [];
+let flocoCount=parseInt(snowAmountSlider.value);
+let flakes=[];
 
-function createFlakes(count) {
+function createFlakes(count){
 
-    snowContainer.innerHTML = "";
-    flakes = [];
+snowContainer.innerHTML="";
+flakes=[];
 
-    for (let i = 0; i < count; i++) {
+for(let i=0;i<count;i++){
 
-        const flake = document.createElement("div");
+const flake=document.createElement("div");
 
-        flake.classList.add("flake");
+flake.classList.add("flake");
 
-        const size = Math.random() * 6 + 4;
+const size=Math.random()*6+4;
 
-        flake.style.width = size + "px";
-        flake.style.height = size + "px";
-        flake.style.background = "white";
-        flake.style.borderRadius = "50%";
-        flake.style.position = "absolute";
+flake.style.width=size+"px";
+flake.style.height=size+"px";
+flake.style.background="white";
+flake.style.borderRadius="50%";
+flake.style.position="absolute";
 
-        flake.style.top = Math.random() * window.innerHeight + "px";
-        flake.style.left = Math.random() * window.innerWidth + "px";
+flake.style.top=Math.random()*window.innerHeight+"px";
+flake.style.left=Math.random()*window.innerWidth+"px";
 
-        flake.speed = Math.random() * 1 + 0.5;
+flake.speed=Math.random()*1+0.5;
 
-        snowContainer.appendChild(flake);
-        flakes.push(flake);
-
-    }
+snowContainer.appendChild(flake);
+flakes.push(flake);
 
 }
 
-function animateSnow() {
+}
 
-    flakes.forEach(flake => {
+function animateSnow(){
 
-        let top = parseFloat(flake.style.top);
+flakes.forEach(flake=>{
 
-        top += flake.speed;
+let top=parseFloat(flake.style.top);
 
-        if (top > window.innerHeight) {
+top+=flake.speed;
 
-            top = -10;
-            flake.style.left =
-                Math.random() * window.innerWidth + "px";
+if(top>window.innerHeight){
 
-        }
+top=-10;
+flake.style.left=Math.random()*window.innerWidth+"px";
 
-        flake.style.top = top + "px";
+}
 
-    });
+flake.style.top=top+"px";
 
-    requestAnimationFrame(animateSnow);
+});
+
+requestAnimationFrame(animateSnow);
 
 }
 
 createFlakes(flocoCount);
 animateSnow();
 
-snowAmountSlider.addEventListener("input", () => {
+snowAmountSlider.addEventListener("input",()=>{
 
-    flocoCount = parseInt(snowAmountSlider.value);
+flocoCount=parseInt(snowAmountSlider.value);
 
-    localStorage.setItem("dominik-snow", flocoCount);
+localStorage.setItem("dominik-snow",flocoCount);
 
-    createFlakes(flocoCount);
+createFlakes(flocoCount);
+
+});
+
+// ================= WALLPAPER =================
+
+brightnessSlider.addEventListener("input",()=>{
+
+wallpaper.style.filter=
+`brightness(${brightnessSlider.value})`;
+
+localStorage.setItem(
+"dominik-brightness",
+brightnessSlider.value
+);
 
 });
 
-// ================= WALLPAPER BRIGHTNESS =================
+// ================= USER PROFILE SAVE =================
 
-brightnessSlider.addEventListener("input", () => {
+if(saveProfileBtn){
 
-    wallpaper.style.filter =
-        `brightness(${brightnessSlider.value})`;
+saveProfileBtn.addEventListener("click",()=>{
 
-    localStorage.setItem(
-        "dominik-brightness",
-        brightnessSlider.value
-    );
+const name=usernameInput.value.trim();
+const avatar=avatarInput.value.trim();
+
+if(name){
+
+localStorage.setItem("dominik-username",name);
+
+if(usernameDisplay)
+usernameDisplay.textContent=name;
+
+}
+
+if(avatar){
+
+localStorage.setItem("dominik-avatar",avatar);
+
+if(userAvatar)
+userAvatar.src=avatar;
+
+}
+
+alert("Perfil salvo!");
 
 });
+
+}
+
+// ================= ADMIN SYSTEM =================
+
+if(adminLoginBtn){
+
+adminLoginBtn.addEventListener("click",()=>{
+
+const pass=prompt("Digite a senha ADMIN");
+
+if(pass===ADMIN_PASSWORD){
+
+if(adminTabBtn)
+adminTabBtn.style.display="flex";
+
+alert("Acesso ADMIN liberado!");
+
+}else{
+
+alert("Senha incorreta");
+
+}
+
+});
+
+}
