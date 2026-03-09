@@ -1,48 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dominik | Digital Core Platform</title>
 
+<meta name="description"
+content="Dominik - Plataforma digital interativa com ferramentas, ideias, jogos e sistema inteligente.">
+
+<meta name="theme-color" content="#050505">
+
+<link rel="icon" href="assets/icon.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="draw.css">
 <link rel="stylesheet" href="login.css">
+
 </head>
 
 <body>
 
+<!-- WALLPAPER -->
 <div id="wallpaper"></div>
+
+<!-- SNOW -->
 <div id="snowContainer"></div>
 
+<!-- AUDIO -->
 <audio id="bgMusic" src="assets/Ambiente.mp3" loop></audio>
 <audio id="clickSound" src="assets/click.mp3"></audio>
 
+<!-- APP -->
 <div id="app">
 
+<!-- HEADER -->
 <header class="main-header">
 
 <div class="header-left">
+
 <button id="toggleSidebar">☰</button>
 
 <div class="logo-area">
 <h1>DOMINIK</h1>
 <span>Interactive Digital Core</span>
 </div>
+
 </div>
 
 <div class="header-right">
+
 <button id="toggleTheme">🌙</button>
 <button id="openLoginMenu">👤</button>
+
 </div>
 
 </header>
 
+<!-- LAYOUT -->
 <div class="layout">
 
+<!-- SIDEBAR -->
 <aside id="sidebar" class="expanded">
 
 <div class="sidebar-top">
@@ -91,21 +112,28 @@ class="avatar">
 <span class="label">Conta</span>
 </button>
 
-<button class="tab-btn admin-tab" id="adminTabBtn" data-tab="adminTab" style="display:none;">
+<button class="tab-btn admin-tab"
+id="adminTabBtn"
+data-tab="adminTab"
+style="display:none;">
+
 <span class="icon">🛡️</span>
 <span class="label">Admin</span>
+
 </button>
 
 </nav>
 
 <div class="sidebar-footer">
-<small>Dominik Core v2.1</small>
+<small>Dominik Core v2.2</small>
 </div>
 
 </aside>
 
+<!-- MAIN -->
 <main id="mainContent">
 
+<!-- HOME -->
 <section class="tab-content active" id="homeTab">
 
 <div class="section-header">
@@ -131,35 +159,59 @@ class="avatar">
 </div>
 
 </div>
+
 </section>
 
+<!-- NOTEBOOK -->
 <section class="tab-content" id="notebookTab">
 
 <div class="workspace-header">
 <h2>Notebook</h2>
-<button id="toggleDrawMode">🎨 Alternar Desenho</button>
+
+<button id="toggleDrawMode">
+🎨 Alternar Desenho
+</button>
+
 </div>
 
 <div class="workspace-body">
 
-<textarea id="notebookText"
-placeholder="Escreva suas ideias, códigos ou pensamentos..."></textarea>
+<textarea
+id="notebookText"
+placeholder="Escreva suas ideias, códigos ou pensamentos...">
+</textarea>
 
 <div id="drawContainer">
 
 <div class="drawTools">
-<input type="color" id="drawColor" value="#00ffcc">
-<input type="range" id="brushSize" min="1" max="20" value="3">
+
+<input type="color"
+id="drawColor"
+value="#00ffcc">
+
+<input type="range"
+id="brushSize"
+min="1"
+max="20"
+value="3">
+
 <button id="eraserBtn">Borracha</button>
-<button id="clearCanvas">Limpar</button>
+
+<button id="clearCanvas">
+Limpar
+</button>
+
 </div>
 
 <canvas id="drawCanvas"></canvas>
 
 </div>
+
 </div>
+
 </section>
 
+<!-- CHAT -->
 <section class="tab-content" id="chatTab">
 
 <div class="section-header">
@@ -169,12 +221,15 @@ placeholder="Escreva suas ideias, códigos ou pensamentos..."></textarea>
 
 <div class="chat-box">
 
-<p>Sistema social será lançado em breve.</p>
+<p>
+Sistema social será lançado em breve.
+</p>
 
 </div>
 
 </section>
 
+<!-- GAMES -->
 <section class="tab-content" id="gamesTab">
 
 <div class="section-header">
@@ -198,6 +253,7 @@ Abrir Nexus Vanguard
 
 </section>
 
+<!-- CONFIG -->
 <section class="tab-content" id="configTab">
 
 <div class="section-header">
@@ -208,30 +264,66 @@ Abrir Nexus Vanguard
 <div class="config-grid">
 
 <div class="config-card">
+
 <label>Quantidade de neve</label>
-<input type="range" id="snowAmount" min="0" max="200" value="50">
+
+<input
+type="range"
+id="snowAmount"
+min="0"
+max="200"
+value="50">
+
 </div>
 
 <div class="config-card">
+
 <label>Brilho do wallpaper</label>
-<input type="range" id="brightness" min="0.1" max="2" step="0.1" value="1">
+
+<input
+type="range"
+id="brightness"
+min="0.1"
+max="2"
+step="0.1"
+value="1">
+
 </div>
 
 <div class="config-card">
+
 <label>Volume da música</label>
-<input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
+
+<input
+type="range"
+id="musicVolume"
+min="0"
+max="1"
+step="0.1"
+value="0.3">
+
 </div>
 
 <div class="config-card checkbox">
+
 <label>
-<input type="checkbox" id="toggleClickSound" checked>
+
+<input
+type="checkbox"
+id="toggleClickSound"
+checked>
+
 Som de clique
+
 </label>
+
 </div>
 
 </div>
+
 </section>
 
+<!-- ACCOUNT -->
 <section class="tab-content" id="accountTab">
 
 <div class="section-header">
@@ -241,9 +333,15 @@ Som de clique
 
 <div class="account-panel">
 
-<input type="text" id="usernameInput" placeholder="Seu nome de usuário">
+<input
+type="text"
+id="usernameInput"
+placeholder="Seu nome de usuário">
 
-<input type="text" id="avatarInput" placeholder="URL da foto de perfil">
+<input
+type="text"
+id="avatarInput"
+placeholder="URL da foto de perfil">
 
 <button id="saveProfile">
 Salvar Perfil
@@ -253,7 +351,9 @@ Salvar Perfil
 Entrar / Criar Conta
 </button>
 
-<button id="logoutBtn" style="display:none;">
+<button
+id="logoutBtn"
+style="display:none;">
 Sair
 </button>
 
@@ -265,6 +365,7 @@ Entrar como Admin
 
 </section>
 
+<!-- ADMIN -->
 <section class="tab-content" id="adminTab">
 
 <div class="section-header">
@@ -276,16 +377,21 @@ Entrar como Admin
 
 <h3>Acesso Administrativo</h3>
 
-<p>Área exclusiva para gerenciamento do Dominik.</p>
+<p>
+Área exclusiva para gerenciamento do Dominik.
+</p>
 
 </div>
 
 </section>
 
 </main>
-</div>
+
 </div>
 
+</div>
+
+<!-- LOGIN MODAL -->
 <div id="loginModal">
 
 <div class="login-box">
@@ -294,15 +400,29 @@ Entrar como Admin
 
 <h2>Conta Dominik</h2>
 
-<input type="email" id="username" placeholder="Email">
-<input type="password" id="password" placeholder="Senha">
+<input
+type="email"
+id="username"
+placeholder="Email">
 
-<button id="loginBtn">Entrar</button>
-<button id="registerBtn">Criar Conta</button>
+<input
+type="password"
+id="password"
+placeholder="Senha">
+
+<button id="loginBtn">
+Entrar
+</button>
+
+<button id="registerBtn">
+Criar Conta
+</button>
 
 </div>
+
 </div>
 
+<!-- DEV OVERLAY -->
 <div id="devOverlay" class="dev-overlay">
 
 <div class="dev-box">
@@ -326,73 +446,10 @@ Essa área do Dominik ainda está sendo construída.
 </div>
 
 </div>
+
 </div>
 
-<script>
-
-const adminPassword = "87236512"
-
-document.getElementById("adminLoginBtn")
-.addEventListener("click", () => {
-
-const pass = prompt("Digite a senha de administrador")
-
-if(pass === adminPassword){
-
-document.getElementById("adminTabBtn").style.display = "flex"
-
-alert("Acesso ADMIN liberado")
-
-}else{
-
-alert("Senha incorreta")
-
-}
-
-})
-
-document.getElementById("saveProfile")
-.addEventListener("click", () => {
-
-const name =
-document.getElementById("usernameInput").value
-
-const avatar =
-document.getElementById("avatarInput").value
-
-localStorage.setItem("dominik-name", name)
-localStorage.setItem("dominik-avatar", avatar)
-
-location.reload()
-
-})
-
-window.addEventListener("load", () => {
-
-const savedName =
-localStorage.getItem("dominik-name")
-
-const savedAvatar =
-localStorage.getItem("dominik-avatar")
-
-if(savedName){
-
-document.getElementById("usernameDisplay").textContent =
-savedName
-
-}
-
-if(savedAvatar){
-
-document.getElementById("userAvatar").src =
-savedAvatar
-
-}
-
-})
-
-</script>
-
+<!-- SCRIPTS -->
 <script type="module" src="auth.js"></script>
 <script type="module" src="login.js"></script>
 <script src="script.js"></script>
