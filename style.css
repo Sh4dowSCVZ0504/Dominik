@@ -1,335 +1,289 @@
-/* =========================
-   DOMINIK CORE CSS
-   Interactive Digital Core
-========================= */
-
-/* ===== RESET ===== */
+/* ============================= */
+/* RESET */
+/* ============================= */
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: "Segoe UI", sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 body{
-    background:#05070a;
-    color:#e6faff;
-    height:100vh;
-    overflow-x:hidden;
+font-family:Segoe UI, Arial, sans-serif;
+background:#05080c;
+color:#e8f7ff;
+overflow-x:hidden;
 }
 
 
-/* ===== VARIABLES ===== */
-
-:root{
-
-    --primary:#00e5ff;
-    --primary-glow:#00e5ff88;
-
-    --bg-main:#05070a;
-    --bg-panel:#0c1117;
-
-    --border:#1b2a36;
-
-    --text-main:#e6faff;
-    --text-muted:#8fa3b0;
-
-}
-
-
-/* ===== SCROLLBAR ===== */
+/* ============================= */
+/* SCROLLBAR */
+/* ============================= */
 
 ::-webkit-scrollbar{
-    width:8px;
+width:8px;
 }
 
 ::-webkit-scrollbar-track{
-    background:#05070a;
+background:#05080c;
 }
 
 ::-webkit-scrollbar-thumb{
-    background:var(--primary);
-    border-radius:20px;
+background:#00eaff;
+border-radius:20px;
 }
 
 
-/* =========================
-   APP LAYOUT
-========================= */
+/* ============================= */
+/* NAVBAR */
+/* ============================= */
 
-.app{
-    display:flex;
-    height:100vh;
+.navbar{
+
+height:70px;
+width:100%;
+
+background:#0b0f14;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 30px;
+
+border-bottom:1px solid #12202a;
+
+}
+
+.logo{
+
+font-size:22px;
+font-weight:700;
+
+letter-spacing:2px;
+
+color:#00eaff;
+
+}
+
+.subtitle{
+
+font-size:11px;
+color:#7c97a5;
+
+margin-top:3px;
+
 }
 
 
-/* =========================
-   SIDEBAR
-========================= */
+/* ============================= */
+/* LAYOUT */
+/* ============================= */
+
+.container{
+
+display:flex;
+min-height:100vh;
+
+}
+
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
 
 .sidebar{
 
-    width:240px;
-    background:var(--bg-panel);
+width:230px;
+background:#080c11;
 
-    border-right:1px solid var(--border);
+border-right:1px solid #12202a;
 
-    padding:20px;
-
-    display:flex;
-    flex-direction:column;
-}
-
-.sidebar .logo{
-
-    font-size:22px;
-    font-weight:700;
-    color:var(--primary);
-    letter-spacing:3px;
-
-}
-
-.sidebar .subtitle{
-
-    font-size:12px;
-    color:var(--text-muted);
-    margin-bottom:30px;
+padding:20px;
 
 }
 
 .sidebar ul{
 
-    list-style:none;
+list-style:none;
+margin-top:20px;
 
 }
 
 .sidebar li{
 
-    margin-bottom:12px;
+margin-bottom:12px;
 
 }
 
 .sidebar a{
 
-    display:flex;
-    align-items:center;
+display:block;
 
-    padding:12px 14px;
+padding:12px 16px;
 
-    border-radius:10px;
+border-radius:8px;
 
-    text-decoration:none;
+text-decoration:none;
 
-    color:var(--text-muted);
+color:#9fb6c4;
 
-    transition:0.25s;
+transition:0.2s;
 
 }
 
 .sidebar a:hover{
 
-    background:#111922;
-    color:var(--primary);
+background:#0f1720;
+color:#00eaff;
 
 }
 
 .sidebar a.active{
 
-    background:linear-gradient(90deg,#00e5ff22,#00e5ff55);
-    color:white;
+background:linear-gradient(90deg,#00eaff33,#00eaff66);
+color:white;
 
 }
 
 
-/* =========================
-   MAIN
-========================= */
+/* ============================= */
+/* MAIN CONTENT */
+/* ============================= */
 
 .main{
 
-    flex:1;
-
-    display:flex;
-
-    flex-direction:column;
+flex:1;
+padding:40px;
 
 }
 
 
-/* =========================
-   NAVBAR
-========================= */
-
-.navbar{
-
-    height:70px;
-
-    background:var(--bg-panel);
-
-    border-bottom:1px solid var(--border);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 25px;
-
-}
-
-.navbar .actions{
-
-    display:flex;
-
-    gap:10px;
-
-}
-
-.icon-btn{
-
-    width:36px;
-    height:36px;
-
-    border-radius:50%;
-
-    background:#0f1620;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
-
-    transition:0.2s;
-
-}
-
-.icon-btn:hover{
-
-    background:var(--primary);
-    color:black;
-
-}
-
-
-/* =========================
-   CONTENT
-========================= */
-
-.content{
-
-    padding:40px;
-
-}
-
-
-/* =========================
-   TITLE
-========================= */
+/* ============================= */
+/* TITLE */
+/* ============================= */
 
 .title{
 
-    font-size:28px;
-    font-weight:700;
-
-    margin-bottom:30px;
+font-size:28px;
+margin-bottom:35px;
+font-weight:700;
 
 }
 
 .title span{
 
-    color:var(--primary);
-
-    border-bottom:3px solid var(--primary);
-
-    padding-bottom:4px;
+color:#00eaff;
+border-bottom:3px solid #00eaff;
+padding-bottom:4px;
 
 }
 
 
-/* =========================
-   CARDS
-========================= */
+/* ============================= */
+/* CARDS */
+/* ============================= */
 
 .cards{
 
-    display:grid;
+display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
 
-    gap:20px;
+gap:20px;
 
 }
 
 .card{
 
-    background:var(--bg-panel);
+background:#0c1218;
 
-    border:1px solid var(--border);
+border:1px solid #16232c;
 
-    border-radius:14px;
+border-radius:12px;
 
-    padding:25px;
+padding:25px;
 
-    transition:0.25s;
+transition:0.25s;
 
 }
 
 .card:hover{
 
-    transform:translateY(-5px);
+transform:translateY(-6px);
 
-    border-color:var(--primary);
+border-color:#00eaff;
 
-    box-shadow:0 0 20px var(--primary-glow);
+box-shadow:0 0 15px #00eaff55;
 
 }
 
 .card h3{
 
-    margin-bottom:10px;
+margin-bottom:10px;
 
 }
 
 .card p{
 
-    color:var(--text-muted);
-
-    font-size:14px;
+color:#9db2bf;
+font-size:14px;
 
 }
 
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
+
+.btn{
+
+background:#00eaff;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:8px;
+
+color:black;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:0.2s;
+
+}
+
+.btn:hover{
+
+box-shadow:0 0 12px #00eaff;
+
+}
+
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
 
 @media(max-width:900px){
 
 .sidebar{
 
-    width:70px;
-
-}
-
-.sidebar .logo,
-.sidebar .subtitle{
-
-    display:none;
+width:70px;
 
 }
 
 .sidebar a{
 
-    justify-content:center;
+text-align:center;
 
 }
 
-.content{
+.main{
 
-    padding:25px;
+padding:25px;
 
 }
 
