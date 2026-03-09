@@ -34,39 +34,19 @@ content="Dominik - Plataforma digital interativa com ferramentas, ideias, jogos 
 <audio id="bgMusic" src="assets/Ambiente.mp3" loop></audio>
 <audio id="clickSound" src="assets/click.mp3"></audio>
 
+
 <!-- APP -->
-<div id="app">
+<div id="app" class="container">
 
-<!-- HEADER -->
-<header class="main-header">
-
-<div class="header-left">
-
-<button id="toggleSidebar">☰</button>
-
-<div class="logo-area">
-<h1>DOMINIK</h1>
-<span>Interactive Digital Core</span>
-</div>
-
-</div>
-
-<div class="header-right">
-
-<button id="toggleTheme">🌙</button>
-<button id="openLoginMenu">👤</button>
-
-</div>
-
-</header>
-
-<!-- LAYOUT -->
-<div class="layout">
 
 <!-- SIDEBAR -->
-<aside id="sidebar" class="expanded">
+<aside id="sidebar" class="sidebar">
 
-<div class="sidebar-top">
+<div class="logo">
+DOMINIK
+<div class="subtitle">Interactive Digital Core</div>
+</div>
+
 
 <div class="user-status" id="userDisplay">
 
@@ -78,49 +58,57 @@ class="avatar">
 
 </div>
 
-</div>
 
-<nav class="nav-tabs">
+<nav>
 
+<ul class="nav-tabs">
+
+<li>
 <button class="tab-btn active" data-tab="homeTab">
-<span class="icon">🏠</span>
-<span class="label">Início</span>
+🏠 Início
 </button>
+</li>
 
+<li>
 <button class="tab-btn" data-tab="notebookTab">
-<span class="icon">📒</span>
-<span class="label">Notebook</span>
+📒 Notebook
 </button>
+</li>
 
+<li>
 <button class="tab-btn" data-tab="chatTab">
-<span class="icon">💬</span>
-<span class="label">Conversas</span>
+💬 Conversas
 </button>
+</li>
 
+<li>
 <button class="tab-btn" data-tab="gamesTab">
-<span class="icon">🎮</span>
-<span class="label">Games</span>
+🎮 Games
 </button>
+</li>
 
+<li>
 <button class="tab-btn" data-tab="configTab">
-<span class="icon">⚙️</span>
-<span class="label">Config</span>
+⚙️ Config
 </button>
+</li>
 
+<li>
 <button class="tab-btn" data-tab="accountTab">
-<span class="icon">👤</span>
-<span class="label">Conta</span>
+👤 Conta
 </button>
+</li>
 
+<li>
 <button class="tab-btn admin-tab"
 id="adminTabBtn"
 data-tab="adminTab"
 style="display:none;">
-
-<span class="icon">🛡️</span>
-<span class="label">Admin</span>
-
+🛡️ Admin
 </button>
+</li>
+
+</ul>
 
 </nav>
 
@@ -130,18 +118,43 @@ style="display:none;">
 
 </aside>
 
+
+
 <!-- MAIN -->
+<div class="main">
+
+
+<!-- HEADER -->
+<header class="navbar">
+
+<div>
+
+<button id="toggleSidebar">☰</button>
+
+</div>
+
+<div class="actions">
+
+<button id="toggleTheme">🌙</button>
+<button id="openLoginMenu">👤</button>
+
+</div>
+
+</header>
+
+
+
+<!-- CONTENT -->
 <main id="mainContent">
+
+
 
 <!-- HOME -->
 <section class="tab-content active" id="homeTab">
 
-<div class="section-header">
-<h2>Bem-vindo ao Dominik</h2>
-<div class="section-line"></div>
-</div>
+<h2 class="title">Bem-vindo ao <span>Dominik</span></h2>
 
-<div class="home-grid">
+<div class="cards">
 
 <div class="card">
 <h3>Organização</h3>
@@ -162,19 +175,16 @@ style="display:none;">
 
 </section>
 
+
+
 <!-- NOTEBOOK -->
 <section class="tab-content" id="notebookTab">
 
-<div class="workspace-header">
-<h2>Notebook</h2>
+<h2 class="title">Notebook</h2>
 
-<button id="toggleDrawMode">
+<button id="toggleDrawMode" class="btn">
 🎨 Alternar Desenho
 </button>
-
-</div>
-
-<div class="workspace-body">
 
 <textarea
 id="notebookText"
@@ -185,21 +195,13 @@ placeholder="Escreva suas ideias, códigos ou pensamentos...">
 
 <div class="drawTools">
 
-<input type="color"
-id="drawColor"
-value="#00ffcc">
+<input type="color" id="drawColor" value="#00ffcc">
 
-<input type="range"
-id="brushSize"
-min="1"
-max="20"
-value="3">
+<input type="range" id="brushSize" min="1" max="20" value="3">
 
 <button id="eraserBtn">Borracha</button>
 
-<button id="clearCanvas">
-Limpar
-</button>
+<button id="clearCanvas">Limpar</button>
 
 </div>
 
@@ -207,37 +209,27 @@ Limpar
 
 </div>
 
-</div>
-
 </section>
+
+
 
 <!-- CHAT -->
 <section class="tab-content" id="chatTab">
 
-<div class="section-header">
-<h2>Conversas</h2>
-<div class="section-line"></div>
-</div>
+<h2 class="title">Conversas</h2>
 
-<div class="chat-box">
-
-<p>
-Sistema social será lançado em breve.
-</p>
-
-</div>
+<p>Sistema social será lançado em breve.</p>
 
 </section>
+
+
 
 <!-- GAMES -->
 <section class="tab-content" id="gamesTab">
 
-<div class="section-header">
-<h2>Área de Games</h2>
-<div class="section-line"></div>
-</div>
+<h2 class="title">Área de Games</h2>
 
-<div class="game-card">
+<div class="card">
 
 <h3>Nexus Vanguard</h3>
 
@@ -245,7 +237,7 @@ Sistema social será lançado em breve.
 Tower Defense estratégico onde cada escolha importa.
 </p>
 
-<button id="openNexusMenu">
+<button id="openNexusMenu" class="btn">
 Abrir Nexus Vanguard
 </button>
 
@@ -253,65 +245,44 @@ Abrir Nexus Vanguard
 
 </section>
 
+
+
 <!-- CONFIG -->
 <section class="tab-content" id="configTab">
 
-<div class="section-header">
-<h2>Configurações</h2>
-<div class="section-line"></div>
-</div>
+<h2 class="title">Configurações</h2>
 
-<div class="config-grid">
+<div class="cards">
 
-<div class="config-card">
+<div class="card">
 
 <label>Quantidade de neve</label>
 
-<input
-type="range"
-id="snowAmount"
-min="0"
-max="200"
-value="50">
+<input type="range" id="snowAmount" min="0" max="200" value="50">
 
 </div>
 
-<div class="config-card">
+<div class="card">
 
 <label>Brilho do wallpaper</label>
 
-<input
-type="range"
-id="brightness"
-min="0.1"
-max="2"
-step="0.1"
-value="1">
+<input type="range" id="brightness" min="0.1" max="2" step="0.1" value="1">
 
 </div>
 
-<div class="config-card">
+<div class="card">
 
 <label>Volume da música</label>
 
-<input
-type="range"
-id="musicVolume"
-min="0"
-max="1"
-step="0.1"
-value="0.3">
+<input type="range" id="musicVolume" min="0" max="1" step="0.1" value="0.3">
 
 </div>
 
-<div class="config-card checkbox">
+<div class="card">
 
 <label>
 
-<input
-type="checkbox"
-id="toggleClickSound"
-checked>
+<input type="checkbox" id="toggleClickSound" checked>
 
 Som de clique
 
@@ -323,15 +294,14 @@ Som de clique
 
 </section>
 
+
+
 <!-- ACCOUNT -->
 <section class="tab-content" id="accountTab">
 
-<div class="section-header">
-<h2>Conta</h2>
-<div class="section-line"></div>
-</div>
+<h2 class="title">Conta</h2>
 
-<div class="account-panel">
+<div class="card">
 
 <input
 type="text"
@@ -343,21 +313,19 @@ type="text"
 id="avatarInput"
 placeholder="URL da foto de perfil">
 
-<button id="saveProfile">
+<button id="saveProfile" class="btn">
 Salvar Perfil
 </button>
 
-<button id="openLoginMenuAccount">
+<button id="openLoginMenuAccount" class="btn">
 Entrar / Criar Conta
 </button>
 
-<button
-id="logoutBtn"
-style="display:none;">
+<button id="logoutBtn" style="display:none;" class="btn">
 Sair
 </button>
 
-<button id="adminLoginBtn">
+<button id="adminLoginBtn" class="btn">
 Entrar como Admin
 </button>
 
@@ -365,15 +333,14 @@ Entrar como Admin
 
 </section>
 
+
+
 <!-- ADMIN -->
 <section class="tab-content" id="adminTab">
 
-<div class="section-header">
-<h2>Painel de Administração</h2>
-<div class="section-line"></div>
-</div>
+<h2 class="title">Painel de Administração</h2>
 
-<div class="admin-panel">
+<div class="card">
 
 <h3>Acesso Administrativo</h3>
 
@@ -385,11 +352,14 @@ Entrar como Admin
 
 </section>
 
+
+
 </main>
 
 </div>
-
 </div>
+
+
 
 <!-- LOGIN MODAL -->
 <div id="loginModal">
@@ -400,27 +370,17 @@ Entrar como Admin
 
 <h2>Conta Dominik</h2>
 
-<input
-type="email"
-id="username"
-placeholder="Email">
+<input type="email" id="username" placeholder="Email">
+<input type="password" id="password" placeholder="Senha">
 
-<input
-type="password"
-id="password"
-placeholder="Senha">
-
-<button id="loginBtn">
-Entrar
-</button>
-
-<button id="registerBtn">
-Criar Conta
-</button>
+<button id="loginBtn">Entrar</button>
+<button id="registerBtn">Criar Conta</button>
 
 </div>
 
 </div>
+
+
 
 <!-- DEV OVERLAY -->
 <div id="devOverlay" class="dev-overlay">
@@ -429,25 +389,16 @@ Criar Conta
 
 <h2>🚧 Área em Desenvolvimento</h2>
 
-<p>
-Essa área do Dominik ainda está sendo construída.
-</p>
+<p>Essa área do Dominik ainda está sendo construída.</p>
 
-<div class="dev-buttons">
-
-<button id="devHomeBtn">
-🏠 Voltar para Início
-</button>
-
-<button id="devCloseBtn">
-⬅ Escolher outra área
-</button>
+<button id="devHomeBtn">🏠 Voltar para Início</button>
+<button id="devCloseBtn">⬅ Escolher outra área</button>
 
 </div>
 
 </div>
 
-</div>
+
 
 <!-- SCRIPTS -->
 <script type="module" src="auth.js"></script>
