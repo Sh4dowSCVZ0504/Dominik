@@ -1,10 +1,12 @@
 // ================= ELEMENTOS =================
+
 const sidebar = document.getElementById("sidebar");
 const notebookText = document.getElementById("notebookText");
 const snowContainer = document.getElementById("snowContainer");
 const wallpaper = document.getElementById("wallpaper");
 
 // ================= DRAW =================
+
 const toggleDrawMode = document.getElementById("toggleDrawMode");
 const drawContainer = document.getElementById("drawContainer");
 const drawCanvas = document.getElementById("drawCanvas");
@@ -13,18 +15,20 @@ const brushSize = document.getElementById("brushSize");
 const eraserBtn = document.getElementById("eraserBtn");
 const clearCanvas = document.getElementById("clearCanvas");
 
+const ctx = drawCanvas.getContext("2d");
+
 let isDrawing = false;
 let isEraser = false;
 
-const ctx = drawCanvas.getContext("2d");
+// ================= AUDIO =================
 
-// ================= ÁUDIO =================
 const bgMusic = document.getElementById("bgMusic");
 const clickSound = document.getElementById("clickSound");
 const musicVolume = document.getElementById("musicVolume");
 const toggleClickSound = document.getElementById("toggleClickSound");
 
 // ================= SLIDERS =================
+
 const snowAmountSlider = document.getElementById("snowAmount");
 const brightnessSlider = document.getElementById("brightness");
 
@@ -43,70 +47,122 @@ const adminTabBtn = document.getElementById("adminTabBtn");
 const ADMIN_PASSWORD = "87236512";
 
 // ================= NOTEBOOK SAVE =================
+
+if (notebookText) {
 notebookText.addEventListener("input", () => {
 localStorage.setItem("dominik-notebook", notebookText.value);
 });
-
-// ================= LOAD =================
-window.addEventListener("load", () => {
-
-const savedText = localStorage.getItem("dominik-notebook");
-if (savedText) notebookText.value = savedText;
-
-const savedVolume = localStorage.getItem("dominik-musicVolume");
-bgMusic.volume = savedVolume !== null ? savedVolume : musicVolume.value;
-musicVolume.value = bgMusic.volume;
-
-const savedClick = localStorage.getItem("dominik-clickSound");
-if (savedClick !== null) toggleClickSound.checked = savedClick === "true";
-
-const savedBrightness = localStorage.getItem("dominik-brightness");
-if (savedBrightness) {
-brightnessSlider.value = savedBrightness;
-wallpaper.style.filter = `brightness(${savedBrightness})`;
 }
 
-const savedSnow = localStorage.getItem("dominik-snow");
-if (savedSnow) snowAmountSlider.value = savedSnow;
+// ================= LOAD =================
+
+window.addEventListener("load", () => {
+
+loadNotebook();
+loadAudio();
+loadSettings();
+loadUser();
+loadDrawing();
 
 resizeCanvas();
 
-const savedDrawing = localStorage.getItem("dominik-drawing");
-if (savedDrawing) {
-const img = new Image();
-img.src = savedDrawing;
-img.onload = () => ctx.drawImage(img, 0, 0);
+});
+
+// ================= LOAD FUNCTIONS =================
+
+function loadNotebook(){
+
+const savedText = localStorage.getItem("dominik-notebook");
+if(savedText && notebookText) notebookText.value = savedText;
+
 }
 
-// ================= LOAD USER PROFILE =================
+function loadAudio(){
+
+const savedVolume = localStorage.getItem("dominik-musicVolume");
+
+bgMusic.volume = savedVolume !== null ? savedVolume : musicVolume.value;
+
+musicVolume.value = bgMusic.volume;
+
+const savedClick = localStorage.getItem("dominik-clickSound");
+
+if(savedClick !== null)
+toggleClickSound.checked = savedClick === "true";
+
+}
+
+function loadSettings(){
+
+const savedBrightness = localStorage.getItem("dominik-brightness");
+
+if(savedBrightness){
+
+brightnessSlider.value = savedBrightness;
+wallpaper.style.filter = `brightness(${savedBrightness})`;
+
+}
+
+const savedSnow = localStorage.getItem("dominik-snow");
+
+if(savedSnow) snowAmountSlider.value = savedSnow;
+
+}
+
+function loadUser(){
 
 const savedName = localStorage.getItem("dominik-username");
 const savedAvatar = localStorage.getItem("dominik-avatar");
 
-if (savedName && usernameDisplay) usernameDisplay.textContent = savedName;
-if (savedAvatar && userAvatar) userAvatar.src = savedAvatar;
+if(savedName && usernameDisplay)
+usernameDisplay.textContent = savedName;
 
-});
+if(savedAvatar && userAvatar)
+userAvatar.src = savedAvatar;
+
+}
+
+function loadDrawing(){
+
+const savedDrawing = localStorage.getItem("dominik-drawing");
+
+if(savedDrawing){
+
+const img = new Image();
+img.src = savedDrawing;
+
+img.onload = () => ctx.drawImage(img,0,0);
+
+}
+
+}
 
 // ================= CLICK SOUND =================
+
 document.addEventListener("click", () => {
 
-if (!toggleClickSound.checked) return;
+if(!toggleClickSound.checked) return;
 
 clickSound.currentTime = 0;
-clickSound.play();
+
+clickSound.play().catch(()=>{});
 
 });
 
 // ================= MUSIC =================
+
 musicVolume.addEventListener("input", () => {
 
 bgMusic.volume = musicVolume.value;
-localStorage.setItem("dominik-musicVolume", musicVolume.value);
+
+localStorage.setItem(
+"dominik-musicVolume",
+musicVolume.value
+);
 
 });
 
-// ================= DRAW SYSTEM =================
+// ================= CANVAS =================
 
 function resizeCanvas(){
 
@@ -126,6 +182,8 @@ ctx.drawImage(temp,0,0);
 
 window.addEventListener("resize", resizeCanvas);
 
+// ================= DRAW MODE =================
+
 toggleDrawMode.addEventListener("click", () => {
 
 const isHidden =
@@ -142,15 +200,19 @@ if(isHidden) setTimeout(resizeCanvas,50);
 
 });
 
+// ================= DRAW SYSTEM =================
+
 function getPosition(e){
 
 const rect = drawCanvas.getBoundingClientRect();
 
 if(e.touches){
+
 return{
 x:e.touches[0].clientX-rect.left,
 y:e.touches[0].clientY-rect.top
 };
+
 }
 
 return{
@@ -163,9 +225,10 @@ y:e.clientY-rect.top
 function startDrawing(e){
 
 e.preventDefault();
-isDrawing=true;
 
-const pos=getPosition(e);
+isDrawing = true;
+
+const pos = getPosition(e);
 
 ctx.beginPath();
 ctx.moveTo(pos.x,pos.y);
@@ -174,9 +237,10 @@ ctx.moveTo(pos.x,pos.y);
 
 function stopDrawing(){
 
-if(!isDrawing)return;
+if(!isDrawing) return;
 
-isDrawing=false;
+isDrawing = false;
+
 ctx.beginPath();
 
 saveCanvas();
@@ -185,23 +249,23 @@ saveCanvas();
 
 function draw(e){
 
-if(!isDrawing)return;
+if(!isDrawing) return;
 
 e.preventDefault();
 
-const pos=getPosition(e);
+const pos = getPosition(e);
 
-ctx.lineWidth=brushSize.value;
-ctx.lineCap="round";
+ctx.lineWidth = brushSize.value;
+ctx.lineCap = "round";
 
 if(isEraser){
 
-ctx.globalCompositeOperation="destination-out";
+ctx.globalCompositeOperation = "destination-out";
 
 }else{
 
-ctx.globalCompositeOperation="source-over";
-ctx.strokeStyle=drawColor.value;
+ctx.globalCompositeOperation = "source-over";
+ctx.strokeStyle = drawColor.value;
 
 }
 
@@ -210,70 +274,76 @@ ctx.stroke();
 
 }
 
-drawCanvas.addEventListener("mousedown",startDrawing);
-drawCanvas.addEventListener("mouseup",stopDrawing);
-drawCanvas.addEventListener("mousemove",draw);
-drawCanvas.addEventListener("mouseleave",stopDrawing);
+// Mouse
 
-drawCanvas.addEventListener("touchstart",startDrawing,{passive:false});
-drawCanvas.addEventListener("touchend",stopDrawing);
-drawCanvas.addEventListener("touchmove",draw,{passive:false});
+drawCanvas.addEventListener("mousedown", startDrawing);
+drawCanvas.addEventListener("mouseup", stopDrawing);
+drawCanvas.addEventListener("mousemove", draw);
+drawCanvas.addEventListener("mouseleave", stopDrawing);
+
+// Touch
+
+drawCanvas.addEventListener("touchstart", startDrawing,{passive:false});
+drawCanvas.addEventListener("touchend", stopDrawing);
+drawCanvas.addEventListener("touchmove", draw,{passive:false});
 
 // ================= DRAW TOOLS =================
 
-eraserBtn.addEventListener("click",()=>{
+eraserBtn.addEventListener("click", () => {
 
-isEraser=!isEraser;
+isEraser = !isEraser;
 
-eraserBtn.textContent=
-isEraser?"🖌️ Pincel":"🧽 Borracha";
+eraserBtn.textContent =
+isEraser ? "🖌️ Pincel" : "🧽 Borracha";
 
 });
 
-clearCanvas.addEventListener("click",()=>{
+clearCanvas.addEventListener("click", () => {
 
 ctx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+
 localStorage.removeItem("dominik-drawing");
 
 });
 
 function saveCanvas(){
 
-const dataURL=drawCanvas.toDataURL("image/png");
-localStorage.setItem("dominik-drawing",dataURL);
+const dataURL = drawCanvas.toDataURL("image/png");
+
+localStorage.setItem(
+"dominik-drawing",
+dataURL
+);
 
 }
 
 // ================= SNOW SYSTEM =================
 
-let flocoCount=parseInt(snowAmountSlider.value);
-let flakes=[];
+let flakes = [];
 
 function createFlakes(count){
 
-snowContainer.innerHTML="";
-flakes=[];
+snowContainer.innerHTML = "";
+flakes = [];
 
 for(let i=0;i<count;i++){
 
-const flake=document.createElement("div");
+const flake = document.createElement("div");
 
 flake.classList.add("flake");
 
-const size=Math.random()*6+4;
+const size = Math.random()*6+4;
 
-flake.style.width=size+"px";
-flake.style.height=size+"px";
-flake.style.background="white";
-flake.style.borderRadius="50%";
-flake.style.position="absolute";
+flake.style.width = size+"px";
+flake.style.height = size+"px";
 
-flake.style.top=Math.random()*window.innerHeight+"px";
-flake.style.left=Math.random()*window.innerWidth+"px";
+flake.style.top = Math.random()*window.innerHeight+"px";
+flake.style.left = Math.random()*window.innerWidth+"px";
 
-flake.speed=Math.random()*1+0.5;
+flake.speed = Math.random()*1+0.5;
 
 snowContainer.appendChild(flake);
+
 flakes.push(flake);
 
 }
@@ -282,20 +352,22 @@ flakes.push(flake);
 
 function animateSnow(){
 
-flakes.forEach(flake=>{
+flakes.forEach(flake => {
 
-let top=parseFloat(flake.style.top);
+let top = parseFloat(flake.style.top);
 
-top+=flake.speed;
+top += flake.speed;
 
-if(top>window.innerHeight){
+if(top > window.innerHeight){
 
-top=-10;
-flake.style.left=Math.random()*window.innerWidth+"px";
+top = -10;
+
+flake.style.left =
+Math.random()*window.innerWidth+"px";
 
 }
 
-flake.style.top=top+"px";
+flake.style.top = top+"px";
 
 });
 
@@ -303,24 +375,25 @@ requestAnimationFrame(animateSnow);
 
 }
 
-createFlakes(flocoCount);
+createFlakes(parseInt(snowAmountSlider.value));
+
 animateSnow();
 
-snowAmountSlider.addEventListener("input",()=>{
+snowAmountSlider.addEventListener("input", () => {
 
-flocoCount=parseInt(snowAmountSlider.value);
+const amount = parseInt(snowAmountSlider.value);
 
-localStorage.setItem("dominik-snow",flocoCount);
+localStorage.setItem("dominik-snow", amount);
 
-createFlakes(flocoCount);
+createFlakes(amount);
 
 });
 
 // ================= WALLPAPER =================
 
-brightnessSlider.addEventListener("input",()=>{
+brightnessSlider.addEventListener("input", () => {
 
-wallpaper.style.filter=
+wallpaper.style.filter =
 `brightness(${brightnessSlider.value})`;
 
 localStorage.setItem(
@@ -330,21 +403,21 @@ brightnessSlider.value
 
 });
 
-// ================= USER PROFILE SAVE =================
+// ================= USER PROFILE =================
 
 if(saveProfileBtn){
 
-saveProfileBtn.addEventListener("click",()=>{
+saveProfileBtn.addEventListener("click", () => {
 
-const name=usernameInput.value.trim();
-const avatar=avatarInput.value.trim();
+const name = usernameInput.value.trim();
+const avatar = avatarInput.value.trim();
 
 if(name){
 
 localStorage.setItem("dominik-username",name);
 
 if(usernameDisplay)
-usernameDisplay.textContent=name;
+usernameDisplay.textContent = name;
 
 }
 
@@ -353,7 +426,7 @@ if(avatar){
 localStorage.setItem("dominik-avatar",avatar);
 
 if(userAvatar)
-userAvatar.src=avatar;
+userAvatar.src = avatar;
 
 }
 
@@ -363,18 +436,18 @@ alert("Perfil salvo!");
 
 }
 
-// ================= ADMIN SYSTEM =================
+// ================= ADMIN =================
 
 if(adminLoginBtn){
 
-adminLoginBtn.addEventListener("click",()=>{
+adminLoginBtn.addEventListener("click", () => {
 
-const pass=prompt("Digite a senha ADMIN");
+const pass = prompt("Digite a senha ADMIN");
 
-if(pass===ADMIN_PASSWORD){
+if(pass === ADMIN_PASSWORD){
 
 if(adminTabBtn)
-adminTabBtn.style.display="flex";
+adminTabBtn.style.display = "flex";
 
 alert("Acesso ADMIN liberado!");
 
